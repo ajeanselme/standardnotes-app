@@ -73,7 +73,7 @@ export class SubscriptionManager
   }
 
   loadSubscriptionFromStorage(): void {
-    this.onlineSubscription = this.storage.getValue(StorageKey.Subscription)
+    this.onlineSubscription = { planName: "Pro", cancelled: false, endsAt: 1761522878, createdAt: 0, updatedAt: 0 }
     void this.notifyEvent(SubscriptionManagerEvent.DidFetchSubscription)
   }
 

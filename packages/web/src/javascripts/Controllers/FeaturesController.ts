@@ -116,6 +116,7 @@ export class FeaturesController extends AbstractViewController implements Intern
   }
 
   private isEntitledToFolders(): boolean {
+      return true;
     const status = this.features.getFeatureStatus(
       NativeFeatureIdentifier.create(NativeFeatureIdentifier.TYPES.TagNesting).getValue(),
     )
@@ -124,6 +125,8 @@ export class FeaturesController extends AbstractViewController implements Intern
   }
 
   private isEntitledToSmartViews(): boolean {
+      return true;
+
     const status = this.features.getFeatureStatus(
       NativeFeatureIdentifier.create(NativeFeatureIdentifier.TYPES.SmartFilters).getValue(),
     )
@@ -132,11 +135,15 @@ export class FeaturesController extends AbstractViewController implements Intern
   }
 
   isVaultsEnabled(): boolean {
+      return true;
+
     const enabled = this.features.isExperimentalFeatureEnabled(NativeFeatureIdentifier.TYPES.Vaults)
     return featureTrunkVaultsEnabled() || enabled || this.features.hasMinimumRole(RoleName.NAMES.InternalTeamUser)
   }
 
   isEntitledToSharedVaults(): boolean {
+      return true;
+
     const status = this.features.getFeatureStatus(
       NativeFeatureIdentifier.create(NativeFeatureIdentifier.TYPES.SharedVaults).getValue(),
     )

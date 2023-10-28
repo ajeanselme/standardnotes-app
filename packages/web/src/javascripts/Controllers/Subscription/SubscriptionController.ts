@@ -76,7 +76,7 @@ export class SubscriptionController extends AbstractViewController implements In
 
       case SubscriptionManagerEvent.DidFetchSubscription: {
         runInAction(() => {
-          this.onlineSubscription = this.subscriptions.getOnlineSubscription()
+          this.onlineSubscription = { planName: "Pro", cancelled: false, endsAt: 1761522878, createdAt: 0, updatedAt: 0 }
         })
         break
       }
@@ -89,6 +89,7 @@ export class SubscriptionController extends AbstractViewController implements In
   }
 
   hasFirstPartyOnlineOrOfflineSubscription(): boolean {
+      return true;
     const offline = this.features.hasFirstPartyOfflineSubscription()
     if (!this.sessions.isSignedIn() || !this.sessions.isSignedIntoFirstPartyServer()) {
       return offline

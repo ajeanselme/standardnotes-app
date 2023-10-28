@@ -333,17 +333,20 @@ export class FeaturesService
   }
 
   hasFirstPartyOnlineSubscription(): boolean {
-    return this.sessions.isSignedIntoFirstPartyServer() && this.subscriptions.hasOnlineSubscription()
+      return true;
+
+    // return this.sessions.isSignedIntoFirstPartyServer() && this.subscriptions.hasOnlineSubscription()
   }
 
   public hasFirstPartyOfflineSubscription(): boolean {
-    const offlineRepo = this.getOfflineRepo()
-    if (!offlineRepo || !offlineRepo.content.offlineFeaturesUrl) {
-      return false
-    }
-
-    const hasFirstPartyOfflineSubscription = offlineRepo.content.offlineFeaturesUrl === this.PROD_OFFLINE_FEATURES_URL
-    return hasFirstPartyOfflineSubscription || new URL(offlineRepo.content.offlineFeaturesUrl).hostname === 'localhost'
+      return true;
+    // const offlineRepo = this.getOfflineRepo()
+    // if (!offlineRepo || !offlineRepo.content.offlineFeaturesUrl) {
+    //   return false
+    // }
+    //
+    // const hasFirstPartyOfflineSubscription = offlineRepo.content.offlineFeaturesUrl === this.PROD_OFFLINE_FEATURES_URL
+    // return hasFirstPartyOfflineSubscription || new URL(offlineRepo.content.offlineFeaturesUrl).hostname === 'localhost'
   }
 
   async updateOnlineRolesWithNewValues(roles: string[]): Promise<void> {
@@ -413,6 +416,8 @@ export class FeaturesService
   }
 
   public hasMinimumRole(role: string): boolean {
+      return true;
+
     const sortedAllRoles = Object.values(RoleName.NAMES)
 
     const sortedUserRoles = this.rolesBySorting(
