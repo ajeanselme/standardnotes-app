@@ -144,9 +144,12 @@ const GeneralAccountMenu: FunctionComponent<Props> = ({ setMenuPane, closeMenu, 
         closeMenu={closeMenu}
         initialFocus={!application.hasAccount() ? CREATE_ACCOUNT_INDEX : SWITCHER_INDEX}
       >
-        <MenuSection className="md:border-t md:pt-2">
-          <WorkspaceSwitcherOption mainApplicationGroup={mainApplicationGroup} />
-        </MenuSection>
+          {
+              user &&
+              <MenuSection className="md:border-t md:pt-2">
+                  <WorkspaceSwitcherOption mainApplicationGroup={mainApplicationGroup} />
+              </MenuSection>
+          }
         <MenuSection>
           {user ? (
             <MenuItem onClick={openPreferences}>
@@ -155,38 +158,38 @@ const GeneralAccountMenu: FunctionComponent<Props> = ({ setMenuPane, closeMenu, 
             </MenuItem>
           ) : (
             <>
-              <MenuItem onClick={activateRegisterPane}>
-                <Icon type="user" className={iconClassName} />
-                Create free account
-              </MenuItem>
+              {/*<MenuItem onClick={activateRegisterPane}>*/}
+              {/*  <Icon type="user" className={iconClassName} />*/}
+              {/*  Create free account*/}
+              {/*</MenuItem>*/}
               <MenuItem onClick={activateSignInPane}>
                 <Icon type="signIn" className={iconClassName} />
                 Sign in
               </MenuItem>
             </>
           )}
-          <MenuItem
-            onClick={() => {
-              application.importModalController.setIsVisible(true)
-              application.accountMenuController.closeAccountMenu()
-            }}
-          >
-            <Icon type="archive" className={iconClassName} />
-            Import
-          </MenuItem>
-          {application.isNativeMobileWeb() && (
-            <MenuItem onClick={openEmail}>
-              <Icon type="email-filled" className={iconClassName} />
-              Email us
-            </MenuItem>
-          )}
-          <MenuItem className="justify-between" onClick={openHelp}>
-            <div className="flex items-center">
-              <Icon type="help" className={iconClassName} />
-              Help &amp; feedback
-            </div>
-            <span className="text-neutral">v{application.version}</span>
-          </MenuItem>
+          {/*<MenuItem*/}
+          {/*  onClick={() => {*/}
+          {/*    application.importModalController.setIsVisible(true)*/}
+          {/*    application.accountMenuController.closeAccountMenu()*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  <Icon type="archive" className={iconClassName} />*/}
+          {/*  Import*/}
+          {/*</MenuItem>*/}
+          {/*{application.isNativeMobileWeb() && (*/}
+          {/*  <MenuItem onClick={openEmail}>*/}
+          {/*    <Icon type="email-filled" className={iconClassName} />*/}
+          {/*    Email us*/}
+          {/*  </MenuItem>*/}
+          {/*)}*/}
+          {/*<MenuItem className="justify-between" onClick={openHelp}>*/}
+          {/*  <div className="flex items-center">*/}
+          {/*    <Icon type="help" className={iconClassName} />*/}
+          {/*    Help &amp; feedback*/}
+          {/*  </div>*/}
+          {/*  <span className="text-neutral">v{application.version}</span>*/}
+          {/*</MenuItem>*/}
         </MenuSection>
         {user ? (
           <MenuSection>

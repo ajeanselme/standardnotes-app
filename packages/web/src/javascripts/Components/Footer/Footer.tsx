@@ -349,23 +349,27 @@ class Footer extends AbstractComponent<Props, State> {
                 user={this.user}
               />
             </div>
+              {
+                  this.user != undefined &&
+                  <>
+                  <div className="relative z-footer-bar-item select-none">
+                      <PreferencesButton openPreferences={this.openPreferences}/>
+                  </div>
 
-            <div className="relative z-footer-bar-item select-none">
-              <PreferencesButton openPreferences={this.openPreferences} />
-            </div>
+                  <div className="relative z-footer-bar-item select-none">
+                      <QuickSettingsButton application={this.application}/>
+                  </div>
 
-            <div className="relative z-footer-bar-item select-none">
-              <QuickSettingsButton application={this.application} />
-            </div>
-
-            <div className="relative z-footer-bar-item  ml-1.5 select-none">
-              <VaultSelectionButton />
-            </div>
-            <UpgradeNow
-              application={this.application}
-              featuresController={this.application.featuresController}
-              subscriptionContoller={this.application.subscriptionController}
-            />
+                  <div className="relative z-footer-bar-item  ml-1.5 select-none">
+                      <VaultSelectionButton/>
+                  </div>
+                  <UpgradeNow
+                      application={this.application}
+                      featuresController={this.application.featuresController}
+                      subscriptionContoller={this.application.subscriptionController}
+                  />
+              </>
+              }
             {this.state.showBetaWarning && (
               <Fragment>
                 <div className="relative z-footer-bar-item ml-3 flex select-none items-center border-l border-solid border-border pl-3">

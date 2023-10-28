@@ -101,6 +101,8 @@ const ApplicationView: FunctionComponent<Props> = ({ application, mainApplicatio
     })
   }, [application])
 
+    const user = application.sessions.getUser()
+
   const onAppLaunch = useCallback(() => {
     setLaunched(true)
     setNeedsUnlock(false)
@@ -203,7 +205,7 @@ const ApplicationView: FunctionComponent<Props> = ({ application, mainApplicatio
 
   const route = application.routeService.getRoute()
 
-  if (route.type === RouteType.AppViewRoute && route.appViewRouteParam === 'extension') {
+  if (user && route.type === RouteType.AppViewRoute && route.appViewRouteParam === 'extension') {
     return (
       <ApplicationProvider application={application}>
         <CommandProvider service={application.keyboardService}>
@@ -234,35 +236,47 @@ const ApplicationView: FunctionComponent<Props> = ({ application, mainApplicatio
             <PremiumModalProvider application={application}>
               <LinkingControllerProvider controller={application.linkingController}>
                 <div className={platformString + ' main-ui-view sn-component h-full'}>
-                  <FileDragNDropProvider application={application}>
-                    <PanesSystemComponent />
-                  </FileDragNDropProvider>
-                  <>
-                    <Footer application={application} applicationGroup={mainApplicationGroup} />
-                    <SessionsModal application={application} />
-                    <PreferencesViewWrapper application={application} />
-                    <RevisionHistoryModal application={application} />
-                  </>
+                    {
+                        user &&
+                        <FileDragNDropProvider application={application}>
+                            <PanesSystemComponent />
+                        </FileDragNDropProvider>
+                    }
+                    <>
+                        <Footer application={application} applicationGroup={mainApplicationGroup}/>
+                        {
+                        user &&
+                            <>
+                                <SessionsModal application={application}/>
+                                <PreferencesViewWrapper application={application}/>
+                                <RevisionHistoryModal application={application}/>
+                            </>
+                        }
+
+                    </>
                   {renderChallenges()}
-                  <>
-                    <NotesContextMenu />
-                    <TagContextMenuWrapper
-                      navigationController={application.navigationController}
-                      featuresController={application.featuresController}
-                    />
-                    <FileContextMenuWrapper
-                      filesController={application.filesController}
-                      itemListController={application.itemListController}
-                    />
-                    <PurchaseFlowWrapper application={application} />
-                    <ConfirmSignoutContainer applicationGroup={mainApplicationGroup} application={application} />
-                    <ToastContainer />
-                    <FilePreviewModalWrapper application={application} />
-                    <PermissionsModalWrapper application={application} />
-                    <EditorWidthSelectionModalWrapper />
-                    <ConfirmDeleteAccountContainer application={application} />
-                    <ImportModal importModalController={application.importModalController} />
-                  </>
+                    {
+                        user &&
+                        <>
+                            <NotesContextMenu/>
+                            <TagContextMenuWrapper
+                                navigationController={application.navigationController}
+                                featuresController={application.featuresController}
+                            />
+                            <FileContextMenuWrapper
+                                filesController={application.filesController}
+                                itemListController={application.itemListController}
+                            />
+                            <PurchaseFlowWrapper application={application}/>
+                            <ConfirmSignoutContainer applicationGroup={mainApplicationGroup} application={application}/>
+                            <ToastContainer/>
+                            <FilePreviewModalWrapper application={application}/>
+                            <PermissionsModalWrapper application={application}/>
+                            <EditorWidthSelectionModalWrapper/>
+                            <ConfirmDeleteAccountContainer application={application}/>
+                            <ImportModal importModalController={application.importModalController}/>
+                    </>
+                    }
                   {application.routeService.isDotOrg && <DotOrgNotice />}
                   {isIOS() && <IosKeyboardClose />}
                 </div>
