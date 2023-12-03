@@ -17,6 +17,7 @@ module.exports = (env, argv) => {
     },
     plugins: [new ReactRefreshWebpackPlugin()],
     devServer: {
+      allowedHosts: "notes.jeanselme.fr",
       headers: {
         'Access-Control-Allow-Origin': '*',
       },
