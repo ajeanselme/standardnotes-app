@@ -34,7 +34,7 @@ type Props = {
   features: FeaturesController
   linkingController: LinkingController
   level: number
-  onContextMenu: (tag: SNTag, posX: number, posY: number) => void
+  onContextMenu: (tag: SNTag, section: TagListSectionType, posX: number, posY: number) => void
 }
 
 const PADDING_BASE_PX = 14
@@ -50,9 +50,17 @@ export const TagsListItem: FunctionComponent<Props> = observer(
     const subtagInputRef = useRef<HTMLInputElement>(null)
     const menuButtonRef = useRef<HTMLAnchorElement>(null)
 
+    const isContextMenuOpenForTag =
+      navigationController.contextMenuTag === tag &&
+      navigationController.contextMenuOpen &&
+      navigationController.contextMenuTagSection === type
     const isSelected = navigationController.selected === tag && navigationController.selectedLocation === type
     const isEditing = navigationController.editingTag === tag && navigationController.selectedLocation === type
-    const isAddingSubtag = navigationController.addingSubtagTo === tag && navigationController.selectedLocation === type
+    const isAddingSubtag =
+      navigationController.addingSubtagTo === tag &&
+      (navigationController.contextMenuTag === tag
+        ? navigationController.contextMenuTagSection === type
+        : navigationController.selectedLocation === type)
     const noteCounts = computed(() => navigationController.getNotesCount(tag))
 
     const childrenTags = computed(() => navigationController.getChildren(tag)).get()
@@ -164,10 +172,10 @@ export const TagsListItem: FunctionComponent<Props> = observer(
         if (contextMenuOpen) {
           navigationController.setContextMenuOpen(false)
         } else {
-          onContextMenu(tag, menuButtonRect.right, menuButtonRect.top)
+          onContextMenu(tag, type, menuButtonRect.right, menuButtonRect.top)
         }
       },
-      [onContextMenu, navigationController, tag],
+      [navigationController, onContextMenu, tag, type],
     )
 
     const tagRef = useRef<HTMLDivElement>(null)
@@ -260,7 +268,11 @@ export const TagsListItem: FunctionComponent<Props> = observer(
         <div
           role="button"
           tabIndex={FOCUSABLE_BUT_NOT_TABBABLE}
-          className={classNames('tag group px-3.5', isSelected && 'selected', isBeingDraggedOver && 'is-drag-over')}
+          className={classNames(
+            'tag group px-3.5 py-1 md:py-0',
+            (isSelected || isContextMenuOpenForTag) && 'selected',
+            isBeingDraggedOver && 'is-drag-over',
+          )}
           onClick={selectCurrentTag}
           ref={tagRef}
           style={{
@@ -268,7 +280,7 @@ export const TagsListItem: FunctionComponent<Props> = observer(
           }}
           onContextMenu={(e) => {
             e.preventDefault()
-            onContextMenu(tag, e.clientX, e.clientY)
+            onContextMenu(tag, type, e.clientX, e.clientY)
           }}
           draggable={true}
           onDragStart={onDragStart}

@@ -5,7 +5,7 @@ import HorizontalSeparator from '@/Components/Shared/HorizontalSeparator'
 import { useApplication } from '@/Components/ApplicationProvider'
 import EncryptionStatusItem from '../Security/EncryptionStatusItem'
 import Icon from '@/Components/Icon/Icon'
-import OfflineSubscription from '../General/Advanced/OfflineSubscription'
+import OfflineSubscription from '../General/Offline/OfflineSubscription'
 import EnvironmentConfiguration from './Settings/EnvironmentConfiguration'
 import DatabaseConfiguration from './Settings/DatabaseConfiguration'
 import { HomeServerEnvironmentConfiguration, HomeServerServiceInterface, classNames, sleep } from '@standardnotes/snjs'
@@ -374,8 +374,8 @@ const HomeServerSettings = () => {
                       <h1 className="sk-h3 m-0 text-sm font-semibold">Activate Premium Features</h1>
                     </div>
                     <p className="col-start-1 col-end-3 m-0 mt-1 text-sm">
-                      Enter your purchased offline subscription code to activate all the features offered by the home
-                      server.
+                      Enter your purchased offline subscription code to activate all the features offered by your home
+                      server, likes files support and Super notes.
                     </p>
                     <Button
                       primary

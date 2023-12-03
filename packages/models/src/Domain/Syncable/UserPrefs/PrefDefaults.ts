@@ -40,12 +40,17 @@ export const PrefDefaults = {
   [PrefKey.ClipperDefaultTagUuid]: undefined,
   [PrefKey.DefaultEditorIdentifier]: NativeFeatureIdentifier.TYPES.PlainEditor,
   [PrefKey.SuperNoteExportFormat]: 'json',
+  [PrefKey.SuperNoteExportEmbedBehavior]: 'reference',
+  [PrefKey.SuperNoteExportUseMDFrontmatter]: true,
   [PrefKey.SystemViewPreferences]: {},
   [PrefKey.AuthenticatorNames]: '',
   [PrefKey.ComponentPreferences]: {},
   [PrefKey.ActiveThemes]: [],
   [PrefKey.ActiveComponents]: [],
   [PrefKey.AlwaysShowSuperToolbar]: true,
+  [PrefKey.AddImportsToTag]: true,
+  [PrefKey.AlwaysCreateNewTagForImports]: true,
+  [PrefKey.ExistingTagForImports]: undefined,
 } satisfies {
   [key in PrefKey]: PrefValue[key]
 }

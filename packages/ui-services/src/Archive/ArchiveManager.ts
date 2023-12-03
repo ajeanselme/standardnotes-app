@@ -19,6 +19,11 @@ function zippableFileName(name: string, suffix = '', format = 'txt'): string {
   return sanitizedName.slice(0, maxFileNameLength - nameEnd.length) + nameEnd
 }
 
+export function parseAndCreateZippableFileName(name: string, suffix = '') {
+  const { name: parsedName, ext } = parseFileName(name)
+  return zippableFileName(parsedName, suffix, ext)
+}
+
 type ZippableData = {
   name: string
   content: Blob

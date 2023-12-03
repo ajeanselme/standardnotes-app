@@ -3,6 +3,239 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.183.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.3...@standardnotes/web@3.183.4) (2023-12-01)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.3](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.2...@standardnotes/web@3.183.3) (2023-12-01)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.1...@standardnotes/web@3.183.2) (2023-12-01)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.0...@standardnotes/web@3.183.1) (2023-11-30)
+
+**Note:** Version bump only for package @standardnotes/web
+
+# [3.183.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.182.4...@standardnotes/web@3.183.0) (2023-11-30)
+
+### Features
+
+* New one-click Home Server, now in Labs. Launch your own self-hosted server instance with just 1 click from the Preferences window. ([#2645](https://github.com/standardnotes/app/issues/2645)) ([17039cb](https://github.com/standardnotes/app/commit/17039cbb80416b84f7fca3b8388f073dd24c6227))
+
+## [3.182.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.182.3...@standardnotes/web@3.182.4) (2023-11-30)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.182.3](https://github.com/standardnotes/app/compare/@standardnotes/web@3.182.2...@standardnotes/web@3.182.3) (2023-11-30)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.182.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.182.1...@standardnotes/web@3.182.2) (2023-11-30)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.182.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.182.0...@standardnotes/web@3.182.1) (2023-11-30)
+
+### Bug Fixes
+
+* Fixed issue on mobile where modals would should up behind the current menu ([b85f040](https://github.com/standardnotes/app/commit/b85f04059c4a7eb50378a52b56e61878e2bd95e1))
+
+# [3.182.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.38...@standardnotes/web@3.182.0) (2023-11-29)
+
+### Features
+
+* Markdown, Rich text, Code, and Checklist note types have been moved to the new Plugins preferences pane. Previous notes created using these types will not experience any disruption. To create new notes using these types, you can reinstall them from the Plugins preferences screen. It is recommended to use the Super note type in place of these replaced note types. ([#2630](https://github.com/standardnotes/app/issues/2630)) ([c43b593](https://github.com/standardnotes/app/commit/c43b593c6098a1293d6e6f25fda184e592897f7c))
+* You can now select an existing tag to automatically add imported notes to ([#2663](https://github.com/standardnotes/app/issues/2663)) ([eb75329](https://github.com/standardnotes/app/commit/eb75329fb43b3a00291983590c7a860e4352dd3e))
+
+## [3.181.38](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.37...@standardnotes/web@3.181.38) (2023-11-27)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.37](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.36...@standardnotes/web@3.181.37) (2023-11-27)
+
+### Bug Fixes
+
+* Fixed issue where multiple trashed items on mobile could not be deleted permanently ([5660df5](https://github.com/standardnotes/app/commit/5660df577da4e803d3ff25f257c0572dfe30db73))
+
+## [3.181.36](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.35...@standardnotes/web@3.181.36) (2023-11-27)
+
+### Bug Fixes
+
+* Fixed issue where checklist item text in Super notes wasn't aligned correctly ([#2656](https://github.com/standardnotes/app/issues/2656)) ([8ff0d20](https://github.com/standardnotes/app/commit/8ff0d208583fd0625682d481f8a065c6ccbd8b8e))
+
+## [3.181.33](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.32...@standardnotes/web@3.181.33) (2023-11-24)
+
+### Bug Fixes
+
+* Fixed issue when importing plaintext file ([1f81cad](https://github.com/standardnotes/app/commit/1f81cadcfc65f70b4e054fe3807c0e93a8e3e4f6))
+
+## [3.181.32](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.31...@standardnotes/web@3.181.32) (2023-11-23)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.31](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.30...@standardnotes/web@3.181.31) (2023-11-21)
+
+### Bug Fixes
+
+* Fixed issue with creating new tags and subtags ([a73c7a4](https://github.com/standardnotes/app/commit/a73c7a41ef2d713668255ca88548e4f89f2e9bfa))
+
+## [3.181.30](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.29...@standardnotes/web@3.181.30) (2023-11-21)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.29](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.28...@standardnotes/web@3.181.29) (2023-11-20)
+
+### Bug Fixes
+
+* Fixed issue where search options weren't selectable on macOS ([b377f9c](https://github.com/standardnotes/app/commit/b377f9cba719d5d43af22dfadd6448dee3d2ef16))
+
+## [3.181.28](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.27...@standardnotes/web@3.181.28) (2023-11-20)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.27](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.26...@standardnotes/web@3.181.27) (2023-11-20)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.26](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.25...@standardnotes/web@3.181.26) (2023-11-20)
+
+### Bug Fixes
+
+* Fixed issue with floating toolbar in Super notes where it would persist even after unselecting text ([69a9e16](https://github.com/standardnotes/app/commit/69a9e16ed2543dce835ee2f440e35bae87275a68))
+
+## [3.181.25](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.24...@standardnotes/web@3.181.25) (2023-11-19)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.24](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.23...@standardnotes/web@3.181.24) (2023-11-11)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.23](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.22...@standardnotes/web@3.181.23) (2023-11-09)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.22](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.21...@standardnotes/web@3.181.22) (2023-11-09)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.21](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.20...@standardnotes/web@3.181.21) (2023-11-09)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.20](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.19...@standardnotes/web@3.181.20) (2023-11-08)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.19](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.18...@standardnotes/web@3.181.19) (2023-11-07)
+
+### Bug Fixes
+
+* Fixed issue where non-image inlined files would not correctly be imported from a Markdown file ([8941675](https://github.com/standardnotes/app/commit/894167520dc829b72f721bdf63acc6038ff8816f))
+
+## [3.181.18](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.17...@standardnotes/web@3.181.18) (2023-11-06)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.17](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.16...@standardnotes/web@3.181.17) (2023-11-06)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.16](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.15...@standardnotes/web@3.181.16) (2023-11-06)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.15](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.14...@standardnotes/web@3.181.15) (2023-11-04)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.14](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.13...@standardnotes/web@3.181.14) (2023-11-03)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.13](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.12...@standardnotes/web@3.181.13) (2023-11-03)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.12](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.11...@standardnotes/web@3.181.12) (2023-11-02)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.11](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.10...@standardnotes/web@3.181.11) (2023-11-02)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.10](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.9...@standardnotes/web@3.181.10) (2023-11-02)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.9](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.8...@standardnotes/web@3.181.9) (2023-11-02)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.8](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.7...@standardnotes/web@3.181.8) (2023-11-01)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.7](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.6...@standardnotes/web@3.181.7) (2023-11-01)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.6](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.5...@standardnotes/web@3.181.6) (2023-11-01)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.5](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.4...@standardnotes/web@3.181.5) (2023-10-31)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.3...@standardnotes/web@3.181.4) (2023-10-31)
+
+### Bug Fixes
+
+* Fixed issue where exporting multiple files with the same name would error ([f408950](https://github.com/standardnotes/app/commit/f408950aa4e59389db81a4ca2b9db5ea49147aaf))
+
+## [3.181.3](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.2...@standardnotes/web@3.181.3) (2023-10-31)
+
+### Bug Fixes
+
+* Fixed issue where a brief flash of white would appear when starting the app on mobile ([572c9b7](https://github.com/standardnotes/app/commit/572c9b7dfaa42773c050772940e383df2940a79f))
+
+## [3.181.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.1...@standardnotes/web@3.181.2) (2023-10-31)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.181.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.181.0...@standardnotes/web@3.181.1) (2023-10-30)
+
+**Note:** Version bump only for package @standardnotes/web
+
+# [3.181.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.180.8...@standardnotes/web@3.181.0) (2023-10-30)
+
+### Features
+
+* When exporting a Super note, embedded files can be inlined in the note or exported along the note in a zip file. You can now also choose to include frontmatter when exporting to Markdown format.
+
+## [3.180.8](https://github.com/standardnotes/app/compare/@standardnotes/web@3.180.7...@standardnotes/web@3.180.8) (2023-10-30)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.180.7](https://github.com/standardnotes/app/compare/@standardnotes/web@3.180.6...@standardnotes/web@3.180.7) (2023-10-29)
+
+### Bug Fixes
+
+* Fixed issue with checklist items in Super notes not being correctly exported to HTML ([198efdc](https://github.com/standardnotes/app/commit/198efdc41c403ce10a40fc2f20345d5b44c83462))
+
+## [3.180.6](https://github.com/standardnotes/app/compare/@standardnotes/web@3.180.5...@standardnotes/web@3.180.6) (2023-10-29)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.180.5](https://github.com/standardnotes/app/compare/@standardnotes/web@3.180.4...@standardnotes/web@3.180.5) (2023-10-29)
+
+**Note:** Version bump only for package @standardnotes/web
+
 ## [3.180.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.180.3...@standardnotes/web@3.180.4) (2023-10-28)
 
 ### Bug Fixes

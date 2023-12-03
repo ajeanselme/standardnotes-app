@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.67.0](https://github.com/standardnotes/app/compare/@standardnotes/services@1.66.1...@standardnotes/services@1.67.0) (2023-11-30)
+
+### Features
+
+* New one-click Home Server, now in Labs. Launch your own self-hosted server instance with just 1 click from the Preferences window. ([#2645](https://github.com/standardnotes/app/issues/2645)) ([17039cb](https://github.com/standardnotes/app/commit/17039cbb80416b84f7fca3b8388f073dd24c6227))
+
+## [1.66.1](https://github.com/standardnotes/app/compare/@standardnotes/services@1.66.0...@standardnotes/services@1.66.1) (2023-11-30)
+
+**Note:** Version bump only for package @standardnotes/services
+
+# [1.66.0](https://github.com/standardnotes/app/compare/@standardnotes/services@1.65.6...@standardnotes/services@1.66.0) (2023-11-29)
+
+### Features
+
+* Markdown, Rich text, Code, and Checklist note types have been moved to the new Plugins preferences pane. Previous notes created using these types will not experience any disruption. To create new notes using these types, you can reinstall them from the Plugins preferences screen. It is recommended to use the Super note type in place of these replaced note types. ([#2630](https://github.com/standardnotes/app/issues/2630)) ([c43b593](https://github.com/standardnotes/app/commit/c43b593c6098a1293d6e6f25fda184e592897f7c))
+
+## [1.65.6](https://github.com/standardnotes/app/compare/@standardnotes/services@1.65.5...@standardnotes/services@1.65.6) (2023-11-27)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.65.5](https://github.com/standardnotes/app/compare/@standardnotes/services@1.65.4...@standardnotes/services@1.65.5) (2023-11-24)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.65.4](https://github.com/standardnotes/app/compare/@standardnotes/services@1.65.3...@standardnotes/services@1.65.4) (2023-11-24)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.65.3](https://github.com/standardnotes/app/compare/@standardnotes/services@1.65.2...@standardnotes/services@1.65.3) (2023-11-08)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.65.2](https://github.com/standardnotes/app/compare/@standardnotes/services@1.65.1...@standardnotes/services@1.65.2) (2023-11-04)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.65.1](https://github.com/standardnotes/app/compare/@standardnotes/services@1.65.0...@standardnotes/services@1.65.1) (2023-11-03)
+
+**Note:** Version bump only for package @standardnotes/services
+
+# [1.65.0](https://github.com/standardnotes/app/compare/@standardnotes/services@1.64.38...@standardnotes/services@1.65.0) (2023-10-30)
+
+### Features
+
+* When exporting a Super note, embedded files can be inlined in the note or exported along the note in a zip file. You can now also choose to include frontmatter when exporting to Markdown format. ([991de1d](https://github.com/standardnotes/app/commit/991de1ddf5dbb1016348d603d244699c676d9b5f)), closes [#2610](https://github.com/standardnotes/app/issues/2610)
+
 ## [1.64.38](https://github.com/standardnotes/app/compare/@standardnotes/services@1.64.37...@standardnotes/services@1.64.38) (2023-10-26)
 
 **Note:** Version bump only for package @standardnotes/services

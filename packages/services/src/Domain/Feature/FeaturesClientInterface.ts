@@ -1,9 +1,11 @@
-import { ComponentInterface, DecryptedItemInterface } from '@standardnotes/models'
+import { DecryptedItemInterface } from '@standardnotes/models'
+import { NativeFeatureIdentifier } from '@standardnotes/features'
+import { RoleName, Uuid } from '@standardnotes/domain-core'
+import { ClientDisplayableError } from '@standardnotes/responses'
 
 import { FeatureStatus } from './FeatureStatus'
 import { SetOfflineFeaturesFunctionResponse } from './SetOfflineFeaturesFunctionResponse'
-import { NativeFeatureIdentifier } from '@standardnotes/features'
-import { Uuid } from '@standardnotes/domain-core'
+import { OfflineSubscriptionEntitlements } from './OfflineSubscriptionEntitlements'
 
 export interface FeaturesClientInterface {
   getFeatureStatus(
@@ -11,8 +13,9 @@ export interface FeaturesClientInterface {
     options?: { inContextOfItem?: DecryptedItemInterface },
   ): FeatureStatus
   hasMinimumRole(role: string): boolean
-
+  hasRole(roleName: RoleName): boolean
   hasFirstPartyOfflineSubscription(): boolean
+  parseOfflineEntitlementsCode(code: string): OfflineSubscriptionEntitlements | ClientDisplayableError
   setOfflineFeaturesCode(code: string): Promise<SetOfflineFeaturesFunctionResponse>
   hasOfflineRepo(): boolean
   deleteOfflineFeatureRepo(): Promise<void>
@@ -26,6 +29,4 @@ export interface FeaturesClientInterface {
   disableExperimentalFeature(identifier: string): void
   isExperimentalFeatureEnabled(identifier: string): boolean
   isExperimentalFeature(identifier: string): boolean
-
-  downloadRemoteThirdPartyFeature(urlOrCode: string): Promise<ComponentInterface | undefined>
 }

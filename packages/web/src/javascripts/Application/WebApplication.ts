@@ -22,6 +22,7 @@ import {
   NoteContent,
   SNNote,
   DesktopManagerInterface,
+  FileItem,
 } from '@standardnotes/snjs'
 import { action, computed, makeObservable, observable } from 'mobx'
 import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
@@ -37,6 +38,7 @@ import {
   IsNativeIOS,
   IsNativeMobileWeb,
   KeyboardService,
+  PluginsServiceInterface,
   RouteServiceInterface,
   ThemeManager,
   VaultDisplayServiceInterface,
@@ -65,7 +67,7 @@ import { PurchaseFlowController } from '@/Controllers/PurchaseFlow/PurchaseFlowC
 import { AccountMenuController } from '@/Controllers/AccountMenu/AccountMenuController'
 import { PreferencesController } from '@/Controllers/PreferencesController'
 import { NotesController } from '@/Controllers/NotesController/NotesController'
-import { ImportModalController } from '@/Controllers/ImportModalController'
+import { ImportModalController } from '@/Components/ImportModal/ImportModalController'
 import { SyncStatusController } from '@/Controllers/SyncStatusController'
 import { HistoryModalController } from '@/Controllers/NoteHistory/HistoryModalController'
 import { NavigationController } from '@/Controllers/Navigation/NavigationController'
@@ -76,6 +78,7 @@ import { NoAccountWarningController } from '@/Controllers/NoAccountWarningContro
 import { SearchOptionsController } from '@/Controllers/SearchOptionsController'
 import { PersistenceService } from '@/Controllers/Abstract/PersistenceService'
 import { removeFromArray } from '@standardnotes/utils'
+import { FileItemActionType } from '@/Components/AttachedFilesPopover/PopoverFileItemAction'
 
 export type WebEventObserver = (event: WebAppEvent, data?: unknown) => void
 
@@ -353,6 +356,21 @@ export class WebApplication extends SNApplication implements WebApplicationInter
     this.notifyWebEvent(WebAppEvent.MobileKeyboardDidChangeFrame, frame)
   }
 
+  handleOpenFilePreviewEvent({ id }: { id: string }): void {
+    const file = this.items.findItem<FileItem>(id)
+    if (!file) {
+      return
+    }
+    this.filesController
+      .handleFileAction({
+        type: FileItemActionType.PreviewFile,
+        payload: {
+          file,
+        },
+      })
+      .catch(console.error)
+  }
+
   handleReceivedFileEvent(file: { name: string; mimeType: string; data: string }): void {
     const filesController = this.filesController
     const blob = getBlobFromBase64(file.data, file.mimeType)
@@ -556,6 +574,10 @@ export class WebApplication extends SNApplication implements WebApplicationInter
 
   get changelogService(): ChangelogService {
     return this.deps.get<ChangelogService>(Web_TYPES.ChangelogService)
+  }
+
+  get pluginsService(): PluginsServiceInterface {
+    return this.deps.get<PluginsServiceInterface>(Web_TYPES.PluginsService)
   }
 
   get momentsService(): MomentsService {

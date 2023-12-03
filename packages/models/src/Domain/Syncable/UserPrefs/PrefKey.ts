@@ -41,12 +41,17 @@ export enum PrefKey {
   ClipperDefaultTagUuid = 'clipperDefaultTagUuid',
   SystemViewPreferences = 'systemViewPreferences',
   SuperNoteExportFormat = 'superNoteExportFormat',
+  SuperNoteExportEmbedBehavior = 'superNoteExportEmbedBehavior',
+  SuperNoteExportUseMDFrontmatter = 'superNoteExportUseMDFrontmatter',
   AuthenticatorNames = 'authenticatorNames',
   PaneGesturesEnabled = 'paneGesturesEnabled',
   ComponentPreferences = 'componentPreferences',
   ActiveThemes = 'activeThemes',
   ActiveComponents = 'activeComponents',
   AlwaysShowSuperToolbar = 'alwaysShowSuperToolbar',
+  AddImportsToTag = 'addImportsToTag',
+  AlwaysCreateNewTagForImports = 'alwaysCreateNewTagForImports',
+  ExistingTagForImports = 'existingTagForImports',
 }
 
 export type PrefValue = {
@@ -83,10 +88,15 @@ export type PrefValue = {
   [PrefKey.ClipperDefaultTagUuid]: string | undefined
   [PrefKey.SystemViewPreferences]: Partial<Record<SystemViewId, TagPreferences>>
   [PrefKey.SuperNoteExportFormat]: 'json' | 'md' | 'html'
+  [PrefKey.SuperNoteExportEmbedBehavior]: 'reference' | 'inline' | 'separate'
+  [PrefKey.SuperNoteExportUseMDFrontmatter]: boolean
   [PrefKey.AuthenticatorNames]: string
   [PrefKey.PaneGesturesEnabled]: boolean
   [PrefKey.ComponentPreferences]: AllComponentPreferences
   [PrefKey.ActiveThemes]: string[]
   [PrefKey.ActiveComponents]: string[]
   [PrefKey.AlwaysShowSuperToolbar]: boolean
+  [PrefKey.AddImportsToTag]: boolean
+  [PrefKey.AlwaysCreateNewTagForImports]: boolean
+  [PrefKey.ExistingTagForImports]: string | undefined
 }

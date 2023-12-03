@@ -3,6 +3,74 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.35.2](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.1...@standardnotes/ui-services@1.35.2) (2023-11-30)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.1](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.0...@standardnotes/ui-services@1.35.1) (2023-11-30)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+# [1.35.0](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.34.6...@standardnotes/ui-services@1.35.0) (2023-11-29)
+
+### Features
+
+* Markdown, Rich text, Code, and Checklist note types have been moved to the new Plugins preferences pane. Previous notes created using these types will not experience any disruption. To create new notes using these types, you can reinstall them from the Plugins preferences screen. It is recommended to use the Super note type in place of these replaced note types. ([#2630](https://github.com/standardnotes/app/issues/2630)) ([c43b593](https://github.com/standardnotes/app/commit/c43b593c6098a1293d6e6f25fda184e592897f7c))
+
+## [1.34.6](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.34.5...@standardnotes/ui-services@1.34.6) (2023-11-27)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.34.5](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.34.4...@standardnotes/ui-services@1.34.5) (2023-11-24)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.34.4](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.34.3...@standardnotes/ui-services@1.34.4) (2023-11-24)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.34.3](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.34.2...@standardnotes/ui-services@1.34.3) (2023-11-24)
+
+### Bug Fixes
+
+* Fixed issue when importing plaintext file ([1f81cad](https://github.com/standardnotes/app/commit/1f81cadcfc65f70b4e054fe3807c0e93a8e3e4f6))
+
+## [1.34.2](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.34.1...@standardnotes/ui-services@1.34.2) (2023-11-08)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.34.1](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.34.0...@standardnotes/ui-services@1.34.1) (2023-11-07)
+
+### Bug Fixes
+
+* Fixed issue where non-image inlined files would not correctly be imported from a Markdown file ([8941675](https://github.com/standardnotes/app/commit/894167520dc829b72f721bdf63acc6038ff8816f))
+
+# [1.34.0](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.33.3...@standardnotes/ui-services@1.34.0) (2023-11-06)
+
+### Features
+
+* Importing markdown files from the Import dialog will now automatically use Super notes ([3bf670e](https://github.com/standardnotes/app/commit/3bf670ece754df3f452a3ae305830c772687d36a))
+
+## [1.33.3](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.33.2...@standardnotes/ui-services@1.33.3) (2023-11-04)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.33.2](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.33.1...@standardnotes/ui-services@1.33.2) (2023-11-03)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.33.1](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.33.0...@standardnotes/ui-services@1.33.1) (2023-10-31)
+
+### Bug Fixes
+
+* Fixed issue where exporting multiple files with the same name would error ([f408950](https://github.com/standardnotes/app/commit/f408950aa4e59389db81a4ca2b9db5ea49147aaf))
+
+# [1.33.0](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.32.7...@standardnotes/ui-services@1.33.0) (2023-10-30)
+
+### Features
+
+* When exporting a Super note, embedded files can be inlined in the note or exported along the note in a zip file. You can now also choose to include frontmatter when exporting to Markdown format. ([991de1d](https://github.com/standardnotes/app/commit/991de1ddf5dbb1016348d603d244699c676d9b5f)), closes [#2610](https://github.com/standardnotes/app/issues/2610)
+
 ## [1.32.7](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.32.6...@standardnotes/ui-services@1.32.7) (2023-10-26)
 
 **Note:** Version bump only for package @standardnotes/ui-services

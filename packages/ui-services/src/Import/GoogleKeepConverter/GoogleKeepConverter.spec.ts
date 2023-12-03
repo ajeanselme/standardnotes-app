@@ -6,7 +6,7 @@ import { jsonTextContentData, htmlTestData, jsonListContentData } from './testDa
 import { GoogleKeepConverter } from './GoogleKeepConverter'
 import { PureCryptoInterface } from '@standardnotes/sncrypto-common'
 import { GenerateUuid } from '@standardnotes/services'
-import { SuperConverterServiceInterface } from '@standardnotes/snjs'
+import { FileItem, SuperConverterServiceInterface } from '@standardnotes/snjs'
 
 describe('GoogleKeepConverter', () => {
   const crypto = {
@@ -16,7 +16,14 @@ describe('GoogleKeepConverter', () => {
   const superConverterService: SuperConverterServiceInterface = {
     isValidSuperString: () => true,
     convertOtherFormatToSuperString: (data: string) => data,
-    convertSuperStringToOtherFormat: (data: string) => data,
+    convertSuperStringToOtherFormat: async (data: string) => data,
+    getEmbeddedFileIDsFromSuperString: () => [],
+    uploadAndReplaceInlineFilesInSuperString: async (
+      superString: string,
+      _uploadFile: (file: File) => Promise<FileItem | undefined>,
+      _linkFile: (file: FileItem) => Promise<void>,
+      _generateUuid: GenerateUuid,
+    ) => superString,
   }
   const generateUuid = new GenerateUuid(crypto)
 

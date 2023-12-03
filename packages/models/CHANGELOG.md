@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.50.1](https://github.com/standardnotes/app/compare/@standardnotes/models@1.50.0...@standardnotes/models@1.50.1) (2023-11-30)
+
+**Note:** Version bump only for package @standardnotes/models
+
+# [1.50.0](https://github.com/standardnotes/app/compare/@standardnotes/models@1.49.3...@standardnotes/models@1.50.0) (2023-11-29)
+
+### Features
+
+* Markdown, Rich text, Code, and Checklist note types have been moved to the new Plugins preferences pane. Previous notes created using these types will not experience any disruption. To create new notes using these types, you can reinstall them from the Plugins preferences screen. It is recommended to use the Super note type in place of these replaced note types. ([#2630](https://github.com/standardnotes/app/issues/2630)) ([c43b593](https://github.com/standardnotes/app/commit/c43b593c6098a1293d6e6f25fda184e592897f7c))
+* You can now select an existing tag to automatically add imported notes to ([#2663](https://github.com/standardnotes/app/issues/2663)) ([eb75329](https://github.com/standardnotes/app/commit/eb75329fb43b3a00291983590c7a860e4352dd3e))
+
+## [1.49.3](https://github.com/standardnotes/app/compare/@standardnotes/models@1.49.2...@standardnotes/models@1.49.3) (2023-11-27)
+
+### Bug Fixes
+
+* Fixed issue where checklist item text in Super notes wasn't aligned correctly ([#2656](https://github.com/standardnotes/app/issues/2656)) ([8ff0d20](https://github.com/standardnotes/app/commit/8ff0d208583fd0625682d481f8a065c6ccbd8b8e))
+
+## [1.49.2](https://github.com/standardnotes/app/compare/@standardnotes/models@1.49.1...@standardnotes/models@1.49.2) (2023-11-24)
+
+### Reverts
+
+* Revert "fix: Fixed issue with checklist alignment in Super notes" ([305647a](https://github.com/standardnotes/app/commit/305647a4da62bd962c5d77989cdc6dcc9be40f78))
+
+## [1.49.1](https://github.com/standardnotes/app/compare/@standardnotes/models@1.49.0...@standardnotes/models@1.49.1) (2023-11-24)
+
+### Bug Fixes
+
+* Fixed issue with checklist alignment in Super notes ([f6c2991](https://github.com/standardnotes/app/commit/f6c2991f460bf234b304f17929b0413282ff5fd5))
+
+# [1.49.0](https://github.com/standardnotes/app/compare/@standardnotes/models@1.48.1...@standardnotes/models@1.49.0) (2023-10-30)
+
+### Features
+
+* When exporting a Super note, embedded files can be inlined in the note or exported along the note in a zip file. You can now also choose to include frontmatter when exporting to Markdown format. ([991de1d](https://github.com/standardnotes/app/commit/991de1ddf5dbb1016348d603d244699c676d9b5f)), closes [#2610](https://github.com/standardnotes/app/issues/2610)
+
 ## [1.48.1](https://github.com/standardnotes/app/compare/@standardnotes/models@1.48.0...@standardnotes/models@1.48.1) (2023-10-26)
 
 **Note:** Version bump only for package @standardnotes/models

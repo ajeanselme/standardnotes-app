@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.61.1](https://github.com/standardnotes/app/compare/@standardnotes/features@1.61.0...@standardnotes/features@1.61.1) (2023-11-30)
+
+### Bug Fixes
+
+* Fixed issue on Android where deprecated editors wouldn't load ([b89d9af](https://github.com/standardnotes/app/commit/b89d9af7dbe4213394b746574653a7278823872d))
+
+# [1.61.0](https://github.com/standardnotes/app/compare/@standardnotes/features@1.60.4...@standardnotes/features@1.61.0) (2023-11-29)
+
+### Features
+
+* Markdown, Rich text, Code, and Checklist note types have been moved to the new Plugins preferences pane. Previous notes created using these types will not experience any disruption. To create new notes using these types, you can reinstall them from the Plugins preferences screen. It is recommended to use the Super note type in place of these replaced note types. ([#2630](https://github.com/standardnotes/app/issues/2630)) ([c43b593](https://github.com/standardnotes/app/commit/c43b593c6098a1293d6e6f25fda184e592897f7c))
+
 ## [1.60.4](https://github.com/standardnotes/app/compare/@standardnotes/features@1.60.3...@standardnotes/features@1.60.4) (2023-10-26)
 
 **Note:** Version bump only for package @standardnotes/features

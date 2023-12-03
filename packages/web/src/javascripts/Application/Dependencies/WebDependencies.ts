@@ -9,6 +9,7 @@ import {
   IsNativeIOS,
   IsNativeMobileWeb,
   KeyboardService,
+  PluginsService,
   RouteService,
   ThemeManager,
   ToastService,
@@ -34,7 +35,7 @@ import { SubscriptionController } from '@/Controllers/Subscription/SubscriptionC
 import { PurchaseFlowController } from '@/Controllers/PurchaseFlow/PurchaseFlowController'
 import { FilesController } from '@/Controllers/FilesController'
 import { HistoryModalController } from '@/Controllers/NoteHistory/HistoryModalController'
-import { ImportModalController } from '@/Controllers/ImportModalController'
+import { ImportModalController } from '@/Components/ImportModal/ImportModalController'
 import { ApplicationEventObserver } from '@/Event/ApplicationEventObserver'
 import { SearchOptionsController } from '@/Controllers/SearchOptionsController'
 import { LinkingController } from '@/Controllers/LinkingController'
@@ -64,6 +65,8 @@ export class WebDependencies extends DependencyContainer {
         application.mutator,
         application.items,
         this.get<HeadlessSuperConverter>(Web_TYPES.SuperConverter),
+        this.get<FilesController>(Web_TYPES.FilesController),
+        this.get<LinkingController>(Web_TYPES.LinkingController),
         application.generateUuid,
       )
     })
@@ -141,6 +144,17 @@ export class WebDependencies extends DependencyContainer {
 
     this.bind(Web_TYPES.ChangelogService, () => {
       return new ChangelogService(application.environment, application.storage)
+    })
+
+    this.bind(Web_TYPES.PluginsService, () => {
+      return new PluginsService(
+        application.items,
+        application.mutator,
+        application.sync,
+        application.legacyApi,
+        application.alerts,
+        application.options.crypto,
+      )
     })
 
     this.bind(Web_TYPES.IsMobileDevice, () => {
@@ -377,6 +391,9 @@ export class WebDependencies extends DependencyContainer {
         this.get<NavigationController>(Web_TYPES.NavigationController),
         application.items,
         application.mutator,
+        this.get<LinkingController>(Web_TYPES.LinkingController),
+        application.preferences,
+        application.events,
       )
     })
 

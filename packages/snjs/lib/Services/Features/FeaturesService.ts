@@ -18,16 +18,13 @@ import {
   AlertService,
   ApiServiceEvent,
   API_MESSAGE_FAILED_OFFLINE_ACTIVATION,
-  API_MESSAGE_UNTRUSTED_EXTENSIONS_WARNING,
   ApplicationStage,
-  ButtonType,
   FeaturesClientInterface,
   FeaturesEvent,
   FeatureStatus,
   InternalEventBusInterface,
   InternalEventHandlerInterface,
   InternalEventInterface,
-  INVALID_EXTENSION_URL,
   MetaReceivedData,
   OfflineSubscriptionEntitlements,
   SetOfflineFeaturesFunctionResponse,
@@ -49,12 +46,9 @@ import {
   WebSocketsService,
 } from '@standardnotes/services'
 
-import { DownloadRemoteThirdPartyFeatureUseCase } from './UseCase/DownloadRemoteThirdPartyFeature'
 import { MigrateFeatureRepoToOfflineEntitlementsUseCase } from './UseCase/MigrateFeatureRepoToOfflineEntitlements'
 import { GetFeatureStatusUseCase } from './UseCase/GetFeatureStatus'
 import { SettingsClientInterface } from '../Settings/SettingsClientInterface'
-
-type GetOfflineSubscriptionDetailsResponse = OfflineSubscriptionEntitlements | ClientDisplayableError
 
 export class FeaturesService
   extends AbstractService<FeaturesEvent>
@@ -65,16 +59,6 @@ export class FeaturesService
   private enabledExperimentalFeatures: string[] = []
 
   private getFeatureStatusUseCase = new GetFeatureStatusUseCase(this.items)
-
-  private readonly TRUSTED_FEATURE_HOSTS = [
-    'api.standardnotes.com',
-    'extensions.standardnotes.com',
-    'extensions.standardnotes.org',
-    'features.standardnotes.com',
-    'localhost',
-  ]
-
-  private readonly TRUSTED_CUSTOM_EXTENSIONS_HOSTS = ['listed.to']
 
   private readonly PROD_OFFLINE_FEATURES_URL = 'https://api.standardnotes.com/v1/offline/features'
 
@@ -245,9 +229,7 @@ export class FeaturesService
 
   public async setOfflineFeaturesCode(code: string): Promise<SetOfflineFeaturesFunctionResponse> {
     try {
-      const activationCodeWithoutSpaces = code.replace(/\s/g, '')
-      const decodedData = this.crypto.base64Decode(activationCodeWithoutSpaces)
-      const result = this.parseOfflineEntitlementsCode(decodedData)
+      const result = this.parseOfflineEntitlementsCode(code)
 
       if (result instanceof ClientDisplayableError) {
         return result
@@ -289,12 +271,16 @@ export class FeaturesService
     }
   }
 
-  private parseOfflineEntitlementsCode(code: string): GetOfflineSubscriptionDetailsResponse | ClientDisplayableError {
+  parseOfflineEntitlementsCode(code: string): OfflineSubscriptionEntitlements | ClientDisplayableError {
     try {
-      const { featuresUrl, extensionKey } = JSON.parse(code)
+      const activationCodeWithoutSpaces = code.replace(/\s/g, '')
+      const decodedData = this.crypto.base64Decode(activationCodeWithoutSpaces)
+
+      const { featuresUrl, extensionKey, subscriptionId } = JSON.parse(decodedData)
       return {
         featuresUrl,
         extensionKey,
+        subscriptionId,
       }
     } catch (error) {
       return new ClientDisplayableError(API_MESSAGE_FAILED_OFFLINE_ACTIVATION)
@@ -304,7 +290,6 @@ export class FeaturesService
   private async downloadOfflineRoles(repo: SNFeatureRepo): Promise<SetOfflineFeaturesFunctionResponse> {
     const result = await this.api.downloadOfflineFeaturesFromRepo({
       repo,
-      trustedFeatureHosts: this.TRUSTED_FEATURE_HOSTS,
     })
 
     if (result instanceof ClientDisplayableError) {
@@ -415,6 +400,10 @@ export class FeaturesService
     return Object.values(RoleName.NAMES).filter((role) => roles.includes(role))
   }
 
+  hasRole(roleName: RoleName): boolean {
+    return this.onlineRoles.includes(roleName.value) || this.offlineRoles.includes(roleName.value)
+  }
+
   public hasMinimumRole(role: string): boolean {
       return true;
 
@@ -448,41 +437,6 @@ export class FeaturesService
         : undefined,
       inContextOfItem: options.inContextOfItem,
     })
-  }
-
-  public async downloadRemoteThirdPartyFeature(urlOrCode: string): Promise<ComponentInterface | undefined> {
-    let url = urlOrCode
-    try {
-      url = this.crypto.base64Decode(urlOrCode)
-    } catch (err) {
-      void err
-    }
-
-    try {
-      const trustedCustomExtensionsUrls = [...this.TRUSTED_FEATURE_HOSTS, ...this.TRUSTED_CUSTOM_EXTENSIONS_HOSTS]
-      const { host } = new URL(url)
-
-      const usecase = new DownloadRemoteThirdPartyFeatureUseCase(this.api, this.items, this.alerts)
-
-      if (!trustedCustomExtensionsUrls.includes(host)) {
-        const didConfirm = await this.alerts.confirm(
-          API_MESSAGE_UNTRUSTED_EXTENSIONS_WARNING,
-          'Install extension from an untrusted source?',
-          'Proceed to install',
-          ButtonType.Danger,
-          'Cancel',
-        )
-        if (didConfirm) {
-          return usecase.execute(url)
-        }
-      } else {
-        return usecase.execute(url)
-      }
-    } catch (err) {
-      void this.alerts.alert(INVALID_EXTENSION_URL)
-    }
-
-    return undefined
   }
 
   override deinit(): void {

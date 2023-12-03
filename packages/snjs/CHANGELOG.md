@@ -3,6 +3,68 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.204.0](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.203.2...@standardnotes/snjs@2.204.0) (2023-11-30)
+
+### Features
+
+* New one-click Home Server, now in Labs. Launch your own self-hosted server instance with just 1 click from the Preferences window. ([#2645](https://github.com/standardnotes/app/issues/2645)) ([17039cb](https://github.com/standardnotes/app/commit/17039cbb80416b84f7fca3b8388f073dd24c6227))
+
+## [2.203.2](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.203.1...@standardnotes/snjs@2.203.2) (2023-11-30)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.203.1](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.203.0...@standardnotes/snjs@2.203.1) (2023-11-30)
+
+### Bug Fixes
+
+* Fixed issue on Android where deprecated editors wouldn't load ([b89d9af](https://github.com/standardnotes/app/commit/b89d9af7dbe4213394b746574653a7278823872d))
+
+# [2.203.0](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.202.113...@standardnotes/snjs@2.203.0) (2023-11-29)
+
+### Features
+
+* Markdown, Rich text, Code, and Checklist note types have been moved to the new Plugins preferences pane. Previous notes created using these types will not experience any disruption. To create new notes using these types, you can reinstall them from the Plugins preferences screen. It is recommended to use the Super note type in place of these replaced note types. ([#2630](https://github.com/standardnotes/app/issues/2630)) ([c43b593](https://github.com/standardnotes/app/commit/c43b593c6098a1293d6e6f25fda184e592897f7c))
+
+## [2.202.113](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.202.112...@standardnotes/snjs@2.202.113) (2023-11-27)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.202.112](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.202.111...@standardnotes/snjs@2.202.112) (2023-11-24)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.202.111](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.202.110...@standardnotes/snjs@2.202.111) (2023-11-24)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.202.110](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.202.109...@standardnotes/snjs@2.202.110) (2023-11-23)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.202.109](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.202.108...@standardnotes/snjs@2.202.109) (2023-11-08)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.202.108](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.202.107...@standardnotes/snjs@2.202.108) (2023-11-06)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.202.107](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.202.106...@standardnotes/snjs@2.202.107) (2023-11-04)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.202.106](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.202.105...@standardnotes/snjs@2.202.106) (2023-11-03)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.202.105](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.202.104...@standardnotes/snjs@2.202.105) (2023-11-02)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.202.104](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.202.103...@standardnotes/snjs@2.202.104) (2023-10-30)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
 ## [2.202.103](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.202.102...@standardnotes/snjs@2.202.103) (2023-10-26)
 
 **Note:** Version bump only for package @standardnotes/snjs

@@ -1,17 +1,14 @@
 import { WebApplication } from '@/Application/WebApplication'
 import {
-  ApplicationEvent,
   classNames,
-  EditorFontSize,
-  EditorLineHeight,
   isPayloadSourceRetrieved,
   PrefKey,
-  PrefDefaults,
   NativeFeatureIdentifier,
   FeatureStatus,
   GetSuperNoteFeature,
+  EditorLineHeightValues,
 } from '@standardnotes/snjs'
-import { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
+import { CSSProperties, FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
 import { BlocksEditor } from './BlocksEditor'
 import { BlocksEditorComposer } from './BlocksEditorComposer'
 import { ItemSelectionPlugin } from './Plugins/ItemSelectionPlugin/ItemSelectionPlugin'
@@ -37,7 +34,6 @@ import PasswordPlugin from './Plugins/PasswordPlugin/PasswordPlugin'
 import { useCommandService } from '@/Components/CommandProvider'
 import { SUPER_SHOW_MARKDOWN_PREVIEW } from '@standardnotes/ui-services'
 import { SuperNoteMarkdownPreview } from './SuperNoteMarkdownPreview'
-import { ExportPlugin } from './Plugins/ExportPlugin/ExportPlugin'
 import GetMarkdownPlugin, { GetMarkdownPluginInterface } from './Plugins/GetMarkdownPlugin/GetMarkdownPlugin'
 import { useResponsiveEditorFontSize } from '@/Utils/getPlaintextFontSize'
 import ReadonlyPlugin from './Plugins/ReadonlyPlugin/ReadonlyPlugin'
@@ -48,6 +44,7 @@ import CodeOptionsPlugin from './Plugins/CodeOptionsPlugin/CodeOptions'
 import RemoteImagePlugin from './Plugins/RemoteImagePlugin/RemoteImagePlugin'
 import NotEntitledBanner from '../ComponentView/NotEntitledBanner'
 import AutoFocusPlugin from './Plugins/AutoFocusPlugin'
+import usePreference from '@/Hooks/usePreference'
 
 export const SuperNotePreviewCharLimit = 160
 
@@ -160,29 +157,9 @@ export const SuperEditor: FunctionComponent<Props> = ({
     return disposer
   }, [controller, controller.item.uuid])
 
-  const [lineHeight, setLineHeight] = useState<EditorLineHeight>(() =>
-    application.getPreference(PrefKey.EditorLineHeight, PrefDefaults[PrefKey.EditorLineHeight]),
-  )
-  const [fontSize, setFontSize] = useState<EditorFontSize>(() =>
-    application.getPreference(PrefKey.EditorFontSize, PrefDefaults[PrefKey.EditorFontSize]),
-  )
-  const responsiveFontSize = useResponsiveEditorFontSize(fontSize)
-
-  const reloadPreferences = useCallback(() => {
-    const lineHeight = application.getPreference(PrefKey.EditorLineHeight, PrefDefaults[PrefKey.EditorLineHeight])
-    const fontSize = application.getPreference(PrefKey.EditorFontSize, PrefDefaults[PrefKey.EditorFontSize])
-
-    setLineHeight(lineHeight)
-    setFontSize(fontSize)
-  }, [application])
-
-  useEffect(() => {
-    reloadPreferences()
-
-    return application.addSingleEventObserver(ApplicationEvent.PreferencesChanged, async () => {
-      reloadPreferences()
-    })
-  }, [reloadPreferences, application])
+  const lineHeight = usePreference(PrefKey.EditorLineHeight)
+  const fontSize = usePreference(PrefKey.EditorFontSize)
+  const responsiveFontSize = useResponsiveEditorFontSize(fontSize, false)
 
   const ref = useRef<HTMLDivElement>(null)
 
@@ -211,7 +188,16 @@ export const SuperEditor: FunctionComponent<Props> = ({
   }, [])
 
   return (
-    <div className="font-editor relative flex h-full w-full flex-col" ref={ref}>
+    <div
+      className="font-editor relative flex h-full w-full flex-col"
+      style={
+        {
+          '--line-height': EditorLineHeightValues[lineHeight],
+          '--font-size': responsiveFontSize,
+        } as CSSProperties
+      }
+      ref={ref}
+    >
       {featureStatus !== FeatureStatus.Entitled && (
         <NotEntitledBanner featureStatus={featureStatus} feature={GetSuperNoteFeature()} />
       )}
@@ -222,9 +208,8 @@ export const SuperEditor: FunctionComponent<Props> = ({
               <BlocksEditor
                 onChange={handleChange}
                 className={classNames(
-                  'blocks-editor relative h-full resize-none px-4 py-4 focus:shadow-none focus:outline-none',
-                  lineHeight && `leading-${lineHeight.toLowerCase()}`,
-                  responsiveFontSize,
+                  'blocks-editor relative h-full resize-none px-4 py-4 text-[length:--font-size] focus:shadow-none focus:outline-none',
+                  lineHeight && 'leading-[--line-height]',
                 )}
                 previewLength={SuperNotePreviewCharLimit}
                 spellcheck={spellcheck}
@@ -243,7 +228,6 @@ export const SuperEditor: FunctionComponent<Props> = ({
                 />
                 <NodeObserverPlugin nodeType={BubbleNode} onRemove={handleBubbleRemove} />
                 <NodeObserverPlugin nodeType={FileNode} onRemove={handleBubbleRemove} />
-                <ExportPlugin />
                 {readonly === undefined && <ReadonlyPlugin note={note.current} />}
                 <AutoFocusPlugin isEnabled={controller.isTemplateNote} />
                 <SuperSearchContextProvider>

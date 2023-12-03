@@ -14,6 +14,7 @@ import { MobileDevice, MobileDeviceEvent } from './Lib/MobileDevice'
 import { IsDev } from './Lib/Utils'
 import { ReceivedSharedItemsHandler } from './ReceivedSharedItemsHandler'
 import { ReviewService } from './ReviewService'
+import notifee, { EventType } from '@notifee/react-native'
 
 const LoggingEnabled = IsDev
 
@@ -116,6 +117,34 @@ const MobileWebAppContents = ({ destroyAndReload }: { destroyAndReload: () => vo
       keyboardWillHideListener.remove()
     }
   }, [webViewRef, stateService, device, androidBackHandlerService, colorSchemeService])
+
+  useEffect(() => {
+    return notifee.onForegroundEvent(({ type, detail }) => {
+      if (type !== EventType.ACTION_PRESS) {
+        return
+      }
+
+      const { notification, pressAction } = detail
+
+      if (!notification || !pressAction) {
+        return
+      }
+
+      if (pressAction.id !== 'open-file') {
+        return
+      }
+
+      webViewRef.current?.postMessage(
+        JSON.stringify({
+          reactNativeEvent: ReactNativeToWebEvent.OpenFilePreview,
+          messageType: 'event',
+          messageData: {
+            id: notification.id,
+          },
+        }),
+      )
+    })
+  }, [])
 
   useEffect(() => {
     const observer = device.addMobileDeviceEventReceiver((event) => {
@@ -242,6 +271,10 @@ const MobileWebAppContents = ({ destroyAndReload }: { destroyAndReload: () => vo
       setShowAndroidWebviewUpdatePrompt(true)
       return
     }
+    if (message === 'appLoaded') {
+      setDidLoadEnd(true)
+      return
+    }
     try {
       const functionData = JSON.parse(message)
       void onFunctionMessage(functionData.functionName, functionData.messageId, functionData.args)
@@ -308,6 +341,8 @@ const MobileWebAppContents = ({ destroyAndReload }: { destroyAndReload: () => vo
     })
   }, [device])
 
+  const [didLoadEnd, setDidLoadEnd] = useState(false)
+
   if (showAndroidWebviewUpdatePrompt) {
     return (
       <View
@@ -350,41 +385,52 @@ const MobileWebAppContents = ({ destroyAndReload }: { destroyAndReload: () => vo
   }
 
   return (
-    <WebView
-      ref={webViewRef}
-      source={{ uri: sourceUri }}
-      style={{ backgroundColor: 'black' }}
-      originWhitelist={['*']}
-      onError={(err) => console.error('An error has occurred', err)}
-      onHttpError={() => console.error('An HTTP error occurred')}
-      onMessage={onMessage}
-      onContentProcessDidTerminate={() => {
-        webViewRef.current?.reload()
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#000000',
       }}
-      onRenderProcessGone={() => {
-        webViewRef.current?.reload()
-      }}
-      hideKeyboardAccessoryView={true}
-      onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
-      allowFileAccess={true}
-      allowUniversalAccessFromFileURLs={true}
-      injectedJavaScriptBeforeContentLoaded={injectedJS}
-      bounces={false}
-      keyboardDisplayRequiresUserAction={false}
-      allowsInlineMediaPlayback={requireInlineMediaPlaybackForMomentsFeature}
-      mediaPlaybackRequiresUserAction={requireMediaUserInteractionForMomentsFeature}
-      scalesPageToFit={true}
-      /**
-       * This disables the global window scroll but keeps scroll within div elements like lists and textareas.
-       * This is needed to prevent the keyboard from pushing the webview up and down when it appears and disappears.
-       */
-      scrollEnabled={false}
-      overScrollMode="never"
-      nativeConfig={Platform.select({
-        android: {
-          component: CustomAndroidWebView,
-        } as WebViewNativeConfig,
-      })}
-    />
+    >
+      <WebView
+        ref={webViewRef}
+        source={{ uri: sourceUri }}
+        style={{
+          backgroundColor: Platform.OS === 'ios' ? 'transparent' : '#000000',
+          opacity: didLoadEnd ? 1 : 0,
+        }}
+        originWhitelist={['*']}
+        onError={(err) => console.error('An error has occurred', err)}
+        onHttpError={() => console.error('An HTTP error occurred')}
+        onMessage={onMessage}
+        onContentProcessDidTerminate={() => {
+          webViewRef.current?.reload()
+        }}
+        onRenderProcessGone={() => {
+          webViewRef.current?.reload()
+        }}
+        hideKeyboardAccessoryView={true}
+        onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
+        allowFileAccess={true}
+        allowUniversalAccessFromFileURLs={true}
+        injectedJavaScriptBeforeContentLoaded={injectedJS}
+        bounces={false}
+        keyboardDisplayRequiresUserAction={false}
+        allowsInlineMediaPlayback={requireInlineMediaPlaybackForMomentsFeature}
+        mediaPlaybackRequiresUserAction={requireMediaUserInteractionForMomentsFeature}
+        scalesPageToFit={true}
+        /**
+         * This disables the global window scroll but keeps scroll within div elements like lists and textareas.
+         * This is needed to prevent the keyboard from pushing the webview up and down when it appears and disappears.
+         */
+        scrollEnabled={false}
+        overScrollMode="never"
+        nativeConfig={Platform.select({
+          android: {
+            component: CustomAndroidWebView,
+          } as WebViewNativeConfig,
+        })}
+        webviewDebuggingEnabled
+      />
+    </View>
   )
 }

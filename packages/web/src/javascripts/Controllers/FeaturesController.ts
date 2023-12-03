@@ -138,7 +138,11 @@ export class FeaturesController extends AbstractViewController implements Intern
       return true;
 
     const enabled = this.features.isExperimentalFeatureEnabled(NativeFeatureIdentifier.TYPES.Vaults)
-    return featureTrunkVaultsEnabled() || enabled || this.features.hasMinimumRole(RoleName.NAMES.InternalTeamUser)
+    return (
+      featureTrunkVaultsEnabled() ||
+      enabled ||
+      this.features.hasRole(RoleName.create(RoleName.NAMES.InternalTeamUser).getValue())
+    )
   }
 
   isEntitledToSharedVaults(): boolean {
