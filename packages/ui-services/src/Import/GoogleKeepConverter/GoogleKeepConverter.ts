@@ -1,9 +1,5 @@
-import { ContentType } from '@standardnotes/domain-core'
-import { DecryptedTransferPayload, NoteContent } from '@standardnotes/models'
-import { readFileAsText } from '../Utils'
-import { GenerateUuid } from '@standardnotes/services'
-import { SuperConverterServiceInterface } from '@standardnotes/files'
-import { NativeFeatureIdentifier, NoteType } from '@standardnotes/features'
+import { SNNote } from '@standardnotes/models'
+import { Converter, InsertNoteFn } from '../Converter'
 
 type Content =
   | {
@@ -25,38 +21,55 @@ type GoogleKeepJsonNote = {
   userEditedTimestampUsec: number
 } & Content
 
-export class GoogleKeepConverter {
-  constructor(
-    private superConverterService: SuperConverterServiceInterface,
-    private _generateUuid: GenerateUuid,
-  ) {}
+export class GoogleKeepConverter implements Converter {
+  constructor() {}
 
-  async convertGoogleKeepBackupFileToNote(
-    file: File,
-    isEntitledToSuper: boolean,
-  ): Promise<DecryptedTransferPayload<NoteContent>> {
-    const content = await readFileAsText(file)
+  getImportType(): string {
+    return 'google-keep'
+  }
 
-    const possiblePayloadFromJson = this.tryParseAsJson(content, isEntitledToSuper)
+  getSupportedFileTypes(): string[] {
+    return ['text/html', 'application/json']
+  }
 
-    if (possiblePayloadFromJson) {
-      return possiblePayloadFromJson
+  isContentValid(content: string): boolean {
+    try {
+      const parsed = JSON.parse(content)
+      return GoogleKeepConverter.isValidGoogleKeepJson(parsed)
+    } catch (error) {
+      console.error(error)
     }
 
-    const possiblePayloadFromHtml = this.tryParseAsHtml(content, file, isEntitledToSuper)
+    return false
+  }
 
-    if (possiblePayloadFromHtml) {
-      return possiblePayloadFromHtml
+  convert: Converter['convert'] = async (
+    file,
+    { insertNote: createNote, canUseSuper, convertHTMLToSuper, convertMarkdownToSuper, readFileAsText },
+  ) => {
+    const content = await readFileAsText(file)
+
+    const note =
+      (await this.tryParseAsJson(content, createNote, convertMarkdownToSuper)) ||
+      (await this.tryParseAsHtml(content, file, createNote, convertHTMLToSuper, canUseSuper))
+
+    if (note) {
+      return {
+        successful: [note],
+        errored: [],
+      }
     }
 
     throw new Error('Could not parse Google Keep backup file')
   }
 
-  tryParseAsHtml(
+  async tryParseAsHtml(
     data: string,
     file: { name: string },
-    isEntitledToSuper: boolean,
-  ): DecryptedTransferPayload<NoteContent> {
+    insertNote: InsertNoteFn,
+    convertHTMLToSuper: (html: string) => string,
+    canUseSuper: boolean,
+  ): Promise<SNNote> {
     const rootElement = document.createElement('html')
     rootElement.innerHTML = data
 
@@ -85,18 +98,18 @@ export class GoogleKeepConverter {
         const checked = item.classList.contains('checked')
         item.setAttribute('aria-checked', checked ? 'true' : 'false')
 
-        if (!isEntitledToSuper) {
+        if (!canUseSuper) {
           item.textContent = `- ${checked ? '[x]' : '[ ]'} ${item.textContent?.trim()}\n`
         }
       })
     })
 
-    if (!isEntitledToSuper) {
+    if (!canUseSuper) {
       // Replace <br> with \n so line breaks get recognised
       contentElement.innerHTML = contentElement.innerHTML.replace(/<br>/g, '\n')
       content = contentElement.textContent
     } else {
-      content = this.superConverterService.convertOtherFormatToSuperString(rootElement.innerHTML, 'html')
+      content = convertHTMLToSuper(rootElement.innerHTML)
     }
 
     if (!content) {
@@ -105,25 +118,13 @@ export class GoogleKeepConverter {
 
     const title = rootElement.getElementsByClassName('title')[0]?.textContent || file.name
 
-    return {
-      created_at: date,
-      created_at_timestamp: date.getTime(),
-      updated_at: date,
-      updated_at_timestamp: date.getTime(),
-      uuid: this._generateUuid.execute().getValue(),
-      content_type: ContentType.TYPES.Note,
-      content: {
-        title: title,
-        text: content,
-        references: [],
-        ...(isEntitledToSuper
-          ? {
-              noteType: NoteType.Super,
-              editorIdentifier: NativeFeatureIdentifier.TYPES.SuperEditor,
-            }
-          : {}),
-      },
-    }
+    return await insertNote({
+      createdAt: date,
+      updatedAt: date,
+      title: title,
+      text: content,
+      useSuperIfPossible: true,
+    })
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -148,7 +149,11 @@ export class GoogleKeepConverter {
     )
   }
 
-  tryParseAsJson(data: string, isEntitledToSuper: boolean): DecryptedTransferPayload<NoteContent> | null {
+  async tryParseAsJson(
+    data: string,
+    createNote: InsertNoteFn,
+    convertMarkdownToSuper: (md: string) => string,
+  ): Promise<SNNote | null> {
     try {
       const parsed = JSON.parse(data) as GoogleKeepJsonNote
       if (!GoogleKeepConverter.isValidGoogleKeepJson(parsed)) {
@@ -165,31 +170,17 @@ export class GoogleKeepConverter {
           })
           .join('\n')
       }
-      if (isEntitledToSuper) {
-        text = this.superConverterService.convertOtherFormatToSuperString(text, 'md')
-      }
-      return {
-        created_at: date,
-        created_at_timestamp: date.getTime(),
-        updated_at: date,
-        updated_at_timestamp: date.getTime(),
-        uuid: this._generateUuid.execute().getValue(),
-        content_type: ContentType.TYPES.Note,
-        content: {
-          title: parsed.title,
-          text,
-          references: [],
-          archived: Boolean(parsed.isArchived),
-          trashed: Boolean(parsed.isTrashed),
-          pinned: Boolean(parsed.isPinned),
-          ...(isEntitledToSuper
-            ? {
-                noteType: NoteType.Super,
-                editorIdentifier: NativeFeatureIdentifier.TYPES.SuperEditor,
-              }
-            : {}),
-        },
-      }
+      text = convertMarkdownToSuper(text)
+      return await createNote({
+        createdAt: date,
+        updatedAt: date,
+        title: parsed.title,
+        text,
+        archived: Boolean(parsed.isArchived),
+        trashed: Boolean(parsed.isTrashed),
+        pinned: Boolean(parsed.isPinned),
+        useSuperIfPossible: true,
+      })
     } catch (e) {
       console.error(e)
       return null

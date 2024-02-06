@@ -3,6 +3,120 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.36.3](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.36.2...@standardnotes/ui-services@1.36.3) (2024-02-02)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.36.2](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.36.1...@standardnotes/ui-services@1.36.2) (2024-01-30)
+
+### Bug Fixes
+
+* Changed shortcut for Replace on macOS to `Opt+Cmd+F` ([2950aaa](https://github.com/standardnotes/app/commit/2950aaa09aa40532eb67779ac1c74a837bdb96da))
+
+## [1.36.1](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.36.0...@standardnotes/ui-services@1.36.1) (2024-01-28)
+
+### Bug Fixes
+
+* The shortcut for displaying the keyboard shortcut help dialog has been changed to `Ctrl + /` ([5a49005](https://github.com/standardnotes/app/commit/5a49005e7961ed254667f62cdba5deba2c792fa7))
+
+# [1.36.0](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.23...@standardnotes/ui-services@1.36.0) (2024-01-27)
+
+### Bug Fixes
+
+* Fixed issue with Simplenote importer not titling multi-line documents ([#2798](https://github.com/standardnotes/app/issues/2798)) ([c858e51](https://github.com/standardnotes/app/commit/c858e516bb20096d15ef1bcd4fa9c5c60ae8301d))
+
+### Features
+
+* Added "Keyboard shortcuts" help dialog. Can be opened by pressing Shift + ? ([ff3c45b](https://github.com/standardnotes/app/commit/ff3c45ba359fb53520310c2c44bd368255e31023))
+
+## [1.35.23](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.22...@standardnotes/ui-services@1.35.23) (2024-01-24)
+
+### Bug Fixes
+
+* Fixed issue with Simplenote importer where empty notes would not be imported ([#2793](https://github.com/standardnotes/app/issues/2793)) ([cf0a7a6](https://github.com/standardnotes/app/commit/cf0a7a6bf1dec2ad33334310185e99200b31f5b1))
+
+## [1.35.22](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.21...@standardnotes/ui-services@1.35.22) (2024-01-24)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.21](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.20...@standardnotes/ui-services@1.35.21) (2024-01-23)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.20](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.19...@standardnotes/ui-services@1.35.20) (2024-01-20)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.19](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.18...@standardnotes/ui-services@1.35.19) (2024-01-11)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.18](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.17...@standardnotes/ui-services@1.35.18) (2024-01-08)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.17](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.16...@standardnotes/ui-services@1.35.17) (2024-01-05)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.16](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.15...@standardnotes/ui-services@1.35.16) (2024-01-03)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.15](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.14...@standardnotes/ui-services@1.35.15) (2024-01-03)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.14](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.13...@standardnotes/ui-services@1.35.14) (2024-01-02)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.13](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.12...@standardnotes/ui-services@1.35.13) (2023-12-28)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.12](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.11...@standardnotes/ui-services@1.35.12) (2023-12-28)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.11](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.10...@standardnotes/ui-services@1.35.11) (2023-12-22)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.10](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.9...@standardnotes/ui-services@1.35.10) (2023-12-11)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.9](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.8...@standardnotes/ui-services@1.35.9) (2023-12-07)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.8](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.7...@standardnotes/ui-services@1.35.8) (2023-12-07)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.7](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.6...@standardnotes/ui-services@1.35.7) (2023-12-06)
+
+### Bug Fixes
+
+* Fixed issues with lists and indents when importing from Evernote ([d16ca33](https://github.com/standardnotes/app/commit/d16ca3305d8457045a1760849058109354f29667))
+
+## [1.35.6](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.5...@standardnotes/ui-services@1.35.6) (2023-12-05)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.5](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.4...@standardnotes/ui-services@1.35.5) (2023-12-04)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.4](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.3...@standardnotes/ui-services@1.35.4) (2023-12-04)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
+## [1.35.3](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.2...@standardnotes/ui-services@1.35.3) (2023-12-04)
+
+**Note:** Version bump only for package @standardnotes/ui-services
+
 ## [1.35.2](https://github.com/standardnotes/app/compare/@standardnotes/ui-services@1.35.1...@standardnotes/ui-services@1.35.2) (2023-11-30)
 
 **Note:** Version bump only for package @standardnotes/ui-services

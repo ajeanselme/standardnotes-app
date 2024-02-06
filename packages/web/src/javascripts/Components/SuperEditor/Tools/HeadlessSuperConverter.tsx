@@ -1,6 +1,5 @@
 import { createHeadlessEditor } from '@lexical/headless'
-import { $convertToMarkdownString } from '@lexical/markdown'
-import { FileItem, GenerateUuid, PrefKey, PrefValue, SuperConverterServiceInterface } from '@standardnotes/snjs'
+import { FileItem, PrefKey, PrefValue, SuperConverterServiceInterface } from '@standardnotes/snjs'
 import {
   $createParagraphNode,
   $getRoot,
@@ -16,10 +15,10 @@ import { MarkdownTransformers } from '../MarkdownTransformers'
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html'
 import { FileNode } from '../Plugins/EncryptedFilePlugin/Nodes/FileNode'
 import { $createFileExportNode } from '../Lexical/Nodes/FileExportNode'
-import { $createInlineFileNode, $isInlineFileNode, InlineFileNode } from '../Plugins/InlineFilePlugin/InlineFileNode'
-import { $createFileNode } from '../Plugins/EncryptedFilePlugin/Nodes/FileUtils'
-import { RemoteImageNode } from '../Plugins/RemoteImagePlugin/RemoteImageNode'
+import { $createInlineFileNode } from '../Plugins/InlineFilePlugin/InlineFileNode'
 import { $convertFromMarkdownString } from '../Lexical/Utils/MarkdownImport'
+import { $convertToMarkdownString } from '../Lexical/Utils/MarkdownExport'
+
 export class HeadlessSuperConverter implements SuperConverterServiceInterface {
   private importEditor: LexicalEditor
   private exportEditor: LexicalEditor
@@ -52,11 +51,14 @@ export class HeadlessSuperConverter implements SuperConverterServiceInterface {
 
   async convertSuperStringToOtherFormat(
     superString: string,
-    toFormat: 'txt' | 'md' | 'html' | 'json',
+    toFormat: 'txt' | 'md' | 'html' | 'json' | 'pdf',
     config?: {
       embedBehavior?: PrefValue[PrefKey.SuperNoteExportEmbedBehavior]
       getFileItem?: (id: string) => FileItem | undefined
       getFileBase64?: (id: string) => Promise<string | undefined>
+      pdf?: {
+        pageSize?: PrefValue[PrefKey.SuperNoteExportPDFPageSize]
+      }
     },
   ): Promise<string> {
     if (superString.length === 0) {
@@ -94,7 +96,8 @@ export class HeadlessSuperConverter implements SuperConverterServiceInterface {
               if (!fileItem) {
                 return
               }
-              if (embedBehavior === 'inline' && getFileBase64) {
+              const canInlineFileType = toFormat === 'pdf' ? fileItem.mimeType.startsWith('image/') : true
+              if (embedBehavior === 'inline' && getFileBase64 && canInlineFileType) {
                 const fileBase64 = await getFileBase64(fileNode.getId())
                 if (!fileBase64) {
                   return
@@ -124,31 +127,45 @@ export class HeadlessSuperConverter implements SuperConverterServiceInterface {
       )
     })
 
-    this.exportEditor.update(
-      () => {
-        switch (toFormat) {
-          case 'txt':
-          case 'md': {
-            const paragraphs = $nodesOfType(ParagraphNode)
-            for (const paragraph of paragraphs) {
-              if (paragraph.isEmpty()) {
-                paragraph.remove()
+    await new Promise<void>((resolve) => {
+      this.exportEditor.update(
+        () => {
+          switch (toFormat) {
+            case 'txt':
+            case 'md': {
+              const paragraphs = $nodesOfType(ParagraphNode)
+              for (const paragraph of paragraphs) {
+                if (paragraph.isEmpty()) {
+                  paragraph.remove()
+                }
               }
+              content = $convertToMarkdownString(MarkdownTransformers)
+              resolve()
+              break
             }
-            content = $convertToMarkdownString(MarkdownTransformers)
-            break
+            case 'html':
+              content = $generateHtmlFromNodes(this.exportEditor)
+              resolve()
+              break
+            case 'pdf': {
+              void import('../Lexical/Utils/PDFExport/PDFExport').then(({ $generatePDFFromNodes }): void => {
+                void $generatePDFFromNodes(this.exportEditor, config?.pdf?.pageSize || 'A4').then((pdf) => {
+                  content = pdf
+                  resolve()
+                })
+              })
+              break
+            }
+            case 'json':
+            default:
+              content = superString
+              resolve()
+              break
           }
-          case 'html':
-            content = $generateHtmlFromNodes(this.exportEditor)
-            break
-          case 'json':
-          default:
-            content = superString
-            break
-        }
-      },
-      { discrete: true },
-    )
+        },
+        { discrete: true },
+      )
+    })
 
     if (typeof content !== 'string') {
       throw new Error('Could not export note')
@@ -157,7 +174,11 @@ export class HeadlessSuperConverter implements SuperConverterServiceInterface {
     return content
   }
 
-  convertOtherFormatToSuperString(otherFormatString: string, fromFormat: 'txt' | 'md' | 'html' | 'json'): string {
+  convertOtherFormatToSuperString: SuperConverterServiceInterface['convertOtherFormatToSuperString'] = (
+    otherFormatString,
+    fromFormat,
+    options,
+  ) => {
     if (otherFormatString.length === 0) {
       return otherFormatString
     }
@@ -177,6 +198,10 @@ export class HeadlessSuperConverter implements SuperConverterServiceInterface {
 
     let didThrow = false
     if (fromFormat === 'html') {
+      const htmlOptions = options?.html || {
+        addLineBreaks: true,
+      }
+
       this.importEditor.update(
         () => {
           try {
@@ -194,7 +219,8 @@ export class HeadlessSuperConverter implements SuperConverterServiceInterface {
                 type === 'link' ||
                 type === 'linebreak' ||
                 type === 'unencrypted-image' ||
-                type === 'inline-file'
+                type === 'inline-file' ||
+                type === 'snfile'
               ) {
                 const paragraphNode = $createParagraphNode()
                 paragraphNode.append(node)
@@ -204,7 +230,9 @@ export class HeadlessSuperConverter implements SuperConverterServiceInterface {
                 nodesToInsert.push(node)
               }
 
-              nodesToInsert.push($createParagraphNode())
+              if (htmlOptions.addLineBreaks) {
+                nodesToInsert.push($createParagraphNode())
+              }
             })
             $getRoot().selectEnd()
             $insertNodes(nodesToInsert.concat($createParagraphNode()))
@@ -232,7 +260,7 @@ export class HeadlessSuperConverter implements SuperConverterServiceInterface {
     }
 
     if (didThrow) {
-      throw new Error('Could not import note')
+      throw new Error('Could not import note. Check error console for details.')
     }
 
     return JSON.stringify(this.importEditor.getEditorState())
@@ -255,63 +283,5 @@ export class HeadlessSuperConverter implements SuperConverterServiceInterface {
     })
 
     return ids
-  }
-
-  async uploadAndReplaceInlineFilesInSuperString(
-    superString: string,
-    uploadFile: (file: File) => Promise<FileItem | undefined>,
-    linkFile: (file: FileItem) => Promise<void>,
-    generateUuid: GenerateUuid,
-  ): Promise<string> {
-    if (superString.length === 0) {
-      return superString
-    }
-
-    this.importEditor.setEditorState(this.importEditor.parseEditorState(superString))
-
-    await new Promise<void>((resolve) => {
-      this.importEditor.update(
-        () => {
-          const inlineFileNodes = $nodesOfType(InlineFileNode)
-          const remoteImageNodes = $nodesOfType(RemoteImageNode).filter((node) => node.__src.startsWith('data:'))
-          const concatenatedNodes = [...inlineFileNodes, ...remoteImageNodes]
-          if (concatenatedNodes.length === 0) {
-            resolve()
-            return
-          }
-          Promise.all(
-            concatenatedNodes.map(async (node) => {
-              const blob = await fetch(node.__src).then((response) => response.blob())
-              const name = $isInlineFileNode(node) ? node.__fileName : node.__alt
-              const mimeType = $isInlineFileNode(node) ? node.__mimeType : node.__src.split(';')[0].split(':')[1]
-              const file = new File([blob], name || generateUuid.execute().getValue(), {
-                type: mimeType,
-              })
-
-              const uploadedFile = await uploadFile(file)
-
-              if (!uploadedFile) {
-                return
-              }
-
-              this.importEditor.update(
-                () => {
-                  const fileNode = $createFileNode(uploadedFile.uuid)
-                  node.replace(fileNode)
-                },
-                { discrete: true },
-              )
-
-              await linkFile(uploadedFile)
-            }),
-          )
-            .then(() => resolve())
-            .catch(console.error)
-        },
-        { discrete: true },
-      )
-    })
-
-    return JSON.stringify(this.importEditor.getEditorState())
   }
 }

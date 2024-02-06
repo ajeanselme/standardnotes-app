@@ -4,33 +4,30 @@
 
 import { jsonTextContentData, htmlTestData, jsonListContentData } from './testData'
 import { GoogleKeepConverter } from './GoogleKeepConverter'
-import { PureCryptoInterface } from '@standardnotes/sncrypto-common'
-import { GenerateUuid } from '@standardnotes/services'
-import { FileItem, SuperConverterServiceInterface } from '@standardnotes/snjs'
+import { ContentType, SNNote } from '@standardnotes/snjs'
+import { InsertNoteFn } from '../Converter'
 
 describe('GoogleKeepConverter', () => {
-  const crypto = {
-    generateUUID: () => String(Math.random()),
-  } as unknown as PureCryptoInterface
+  const insertNote: InsertNoteFn = async ({ title, text, createdAt, updatedAt, trashed, archived, pinned }) =>
+    ({
+      uuid: Math.random().toString(),
+      created_at: createdAt,
+      updated_at: updatedAt,
+      content_type: ContentType.TYPES.Note,
+      content: {
+        title,
+        text,
+        trashed,
+        archived,
+        pinned,
+        references: [],
+      },
+    }) as unknown as SNNote
 
-  const superConverterService: SuperConverterServiceInterface = {
-    isValidSuperString: () => true,
-    convertOtherFormatToSuperString: (data: string) => data,
-    convertSuperStringToOtherFormat: async (data: string) => data,
-    getEmbeddedFileIDsFromSuperString: () => [],
-    uploadAndReplaceInlineFilesInSuperString: async (
-      superString: string,
-      _uploadFile: (file: File) => Promise<FileItem | undefined>,
-      _linkFile: (file: FileItem) => Promise<void>,
-      _generateUuid: GenerateUuid,
-    ) => superString,
-  }
-  const generateUuid = new GenerateUuid(crypto)
+  it('should parse json data', async () => {
+    const converter = new GoogleKeepConverter()
 
-  it('should parse json data', () => {
-    const converter = new GoogleKeepConverter(superConverterService, generateUuid)
-
-    const textContent = converter.tryParseAsJson(jsonTextContentData, false)
+    const textContent = await converter.tryParseAsJson(jsonTextContentData, insertNote, (md) => md)
 
     expect(textContent).not.toBeNull()
     expect(textContent?.created_at).toBeInstanceOf(Date)
@@ -43,7 +40,7 @@ describe('GoogleKeepConverter', () => {
     expect(textContent?.content.archived).toBe(false)
     expect(textContent?.content.pinned).toBe(false)
 
-    const listContent = converter.tryParseAsJson(jsonListContentData, false)
+    const listContent = await converter.tryParseAsJson(jsonListContentData, insertNote, (md) => md)
 
     expect(listContent).not.toBeNull()
     expect(listContent?.created_at).toBeInstanceOf(Date)
@@ -57,14 +54,16 @@ describe('GoogleKeepConverter', () => {
     expect(textContent?.content.pinned).toBe(false)
   })
 
-  it('should parse html data', () => {
-    const converter = new GoogleKeepConverter(superConverterService, generateUuid)
+  it('should parse html data', async () => {
+    const converter = new GoogleKeepConverter()
 
-    const result = converter.tryParseAsHtml(
+    const result = await converter.tryParseAsHtml(
       htmlTestData,
       {
         name: 'note-2.html',
       },
+      insertNote,
+      (html) => html,
       false,
     )
 

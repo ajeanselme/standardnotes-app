@@ -226,7 +226,7 @@ describe('history manager', () => {
     })
   })
 
-  describe.skip('remote', function () {
+  describe('remote', function () {
     this.timeout(Factory.TwentySecondTimeout)
 
     let context
@@ -238,6 +238,12 @@ describe('history manager', () => {
 
       await context.launch()
       await context.register()
+
+      /**
+       * Free user revisions are limited to 1 per day. This is to ensure that
+       * we don't hit that limit during testing.
+       */
+      await context.activatePaidSubscriptionForUser()
     })
 
     afterEach(async function () {

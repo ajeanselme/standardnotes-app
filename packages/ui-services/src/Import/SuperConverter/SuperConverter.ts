@@ -1,19 +1,30 @@
 import { SuperConverterServiceInterface } from '@standardnotes/files'
-import { DecryptedTransferPayload, NoteContent } from '@standardnotes/models'
-import { GenerateUuid } from '@standardnotes/services'
-import { readFileAsText } from '../Utils'
 import { parseFileName } from '@standardnotes/filepicker'
-import { ContentType } from '@standardnotes/domain-core'
-import { NativeFeatureIdentifier, NoteType } from '@standardnotes/features'
+import { Converter } from '../Converter'
+import { ConversionResult } from '../ConversionResult'
 
-export class SuperConverter {
-  constructor(
-    private converterService: SuperConverterServiceInterface,
-    private _generateUuid: GenerateUuid,
-  ) {}
+export class SuperConverter implements Converter {
+  constructor(private converterService: SuperConverterServiceInterface) {}
 
-  async convertSuperFileToNote(file: File): Promise<DecryptedTransferPayload<NoteContent>> {
+  getImportType(): string {
+    return 'super'
+  }
+
+  getSupportedFileTypes(): string[] {
+    return ['application/json']
+  }
+
+  isContentValid(content: string): boolean {
+    return this.converterService.isValidSuperString(content)
+  }
+
+  convert: Converter['convert'] = async (file, { insertNote, readFileAsText }) => {
     const content = await readFileAsText(file)
+
+    const result: ConversionResult = {
+      successful: [],
+      errored: [],
+    }
 
     if (!this.converterService.isValidSuperString(content)) {
       throw new Error('Content is not valid Super JSON')
@@ -24,20 +35,16 @@ export class SuperConverter {
     const createdAtDate = file.lastModified ? new Date(file.lastModified) : new Date()
     const updatedAtDate = file.lastModified ? new Date(file.lastModified) : new Date()
 
-    return {
-      created_at: createdAtDate,
-      created_at_timestamp: createdAtDate.getTime(),
-      updated_at: updatedAtDate,
-      updated_at_timestamp: updatedAtDate.getTime(),
-      uuid: this._generateUuid.execute().getValue(),
-      content_type: ContentType.TYPES.Note,
-      content: {
-        title: name,
-        text: content,
-        references: [],
-        noteType: NoteType.Super,
-        editorIdentifier: NativeFeatureIdentifier.TYPES.SuperEditor,
-      },
-    }
+    const note = await insertNote({
+      createdAt: createdAtDate,
+      updatedAt: updatedAtDate,
+      title: name,
+      text: content,
+      useSuperIfPossible: true,
+    })
+
+    result.successful.push(note)
+
+    return result
   }
 }

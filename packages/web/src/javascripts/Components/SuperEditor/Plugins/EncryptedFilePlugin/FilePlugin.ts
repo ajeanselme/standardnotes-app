@@ -6,13 +6,13 @@ import { FileNode } from './Nodes/FileNode'
 import {
   $createParagraphNode,
   $insertNodes,
-  $isRootOrShadowRoot,
   COMMAND_PRIORITY_EDITOR,
   COMMAND_PRIORITY_NORMAL,
   PASTE_COMMAND,
+  $isRootOrShadowRoot,
 } from 'lexical'
 import { $createFileNode } from './Nodes/FileUtils'
-import { $wrapNodeInElement, mergeRegister } from '@lexical/utils'
+import { mergeRegister, $wrapNodeInElement } from '@lexical/utils'
 import { useFilesController } from '@/Controllers/FilesControllerProvider'
 import { FilesControllerEvent } from '@/Controllers/FilesController'
 import { useLinkingController } from '@/Controllers/LinkingControllerProvider'
@@ -75,6 +75,20 @@ export default function FilePlugin({ currentNote }: { currentNote: SNNote }): JS
         },
         COMMAND_PRIORITY_NORMAL,
       ),
+      editor.registerNodeTransform(FileNode, (node) => {
+        /**
+         * When adding the node we wrap it with a paragraph to avoid insertion errors,
+         * however that causes issues with selection. We unwrap the node to fix that.
+         */
+        const parent = node.getParent()
+        if (!parent) {
+          return
+        }
+        if (parent.getChildrenSize() === 1) {
+          parent.insertBefore(node)
+          parent.remove()
+        }
+      }),
     )
   }, [application, currentNote.protected, editor, filesController, linkingController])
 

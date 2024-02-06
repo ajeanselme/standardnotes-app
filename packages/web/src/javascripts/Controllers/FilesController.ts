@@ -11,6 +11,7 @@ import {
   ArchiveManager,
   confirmDialog,
   IsNativeMobileWeb,
+  parseAndCreateZippableFileName,
   VaultDisplayServiceInterface,
 } from '@standardnotes/ui-services'
 import { Strings, StringUtils } from '@/Constants/Strings'
@@ -44,6 +45,7 @@ import { action, makeObservable, observable, reaction } from 'mobx'
 import { AbstractViewController } from './Abstract/AbstractViewController'
 import { NotesController } from './NotesController/NotesController'
 import { downloadOrShareBlobBasedOnPlatform } from '@/Utils/DownloadOrShareBasedOnPlatform'
+import { truncateString } from '@/Components/SuperEditor/Utils'
 
 const UnprotectedFileActions = [FileItemActionType.ToggleFileProtection]
 const NonMutatingFileActions = [FileItemActionType.DownloadFile, FileItemActionType.PreviewFile]
@@ -67,8 +69,8 @@ export class FilesController extends AbstractViewController<FilesControllerEvent
   showProtectedOverlay = false
   fileContextMenuLocation: FileContextMenuLocation = { x: 0, y: 0 }
 
-  shouldUseStreamingReader = StreamingFileSaver.available()
-  reader = this.shouldUseStreamingReader ? StreamingFileReader : ClassicFileReader
+  shouldUseStreamingAPI = StreamingFileSaver.available()
+  reader = this.shouldUseStreamingAPI ? StreamingFileReader : ClassicFileReader
   maxFileSize = this.reader.maximumFileSize()
 
   override deinit(): void {
@@ -251,7 +253,7 @@ export class FilesController extends AbstractViewController<FilesControllerEvent
         await this.deleteFile(file)
         break
       case FileItemActionType.DownloadFile:
-        await this.downloadFile(file)
+        await this.downloadFile(file, action.payload.directoryHandle)
         break
       case FileItemActionType.ToggleFileProtection: {
         const isProtected = await this.toggleFileProtection(file)
@@ -289,7 +291,7 @@ export class FilesController extends AbstractViewController<FilesControllerEvent
     })
   }
 
-  private async downloadFile(file: FileItem): Promise<void> {
+  private async downloadFile(file: FileItem, directoryHandle?: FileSystemDirectoryHandle): Promise<void> {
     let downloadingToastId = ''
     let canShowProgressNotification = false
 
@@ -298,12 +300,15 @@ export class FilesController extends AbstractViewController<FilesControllerEvent
     }
 
     try {
-      const saver = StreamingFileSaver.available() ? new StreamingFileSaver(file.name) : new ClassicFileSaver()
+      const saver = this.shouldUseStreamingAPI ? new StreamingFileSaver(file.name) : new ClassicFileSaver()
 
       const isUsingStreamingSaver = saver instanceof StreamingFileSaver
 
       if (isUsingStreamingSaver) {
-        await saver.selectFileToSaveTo()
+        const fileHandle = directoryHandle
+          ? await directoryHandle.getFileHandle(file.name, { create: true })
+          : undefined
+        await saver.selectFileToSaveTo(fileHandle)
       }
 
       if (this.mobileDevice && canShowProgressNotification) {
@@ -391,6 +396,10 @@ export class FilesController extends AbstractViewController<FilesControllerEvent
         })
       }
     } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        return
+      }
+
       console.error(error)
 
       addToast({
@@ -409,7 +418,7 @@ export class FilesController extends AbstractViewController<FilesControllerEvent
   }
 
   alertIfFileExceedsSizeLimit = (file: File): boolean => {
-    if (!this.shouldUseStreamingReader && this.maxFileSize && file.size >= this.maxFileSize) {
+    if (!this.shouldUseStreamingAPI && this.maxFileSize && file.size >= this.maxFileSize) {
       this.alerts
         .alert(
           `This file exceeds the limits supported in this browser. To upload files greater than ${
@@ -461,7 +470,7 @@ export class FilesController extends AbstractViewController<FilesControllerEvent
       const fileToUpload =
         fileOrHandle instanceof File
           ? fileOrHandle
-          : fileOrHandle instanceof FileSystemFileHandle && this.shouldUseStreamingReader
+          : fileOrHandle instanceof FileSystemFileHandle && this.shouldUseStreamingAPI
           ? await fileOrHandle.getFile()
           : undefined
 
@@ -657,13 +666,41 @@ export class FilesController extends AbstractViewController<FilesControllerEvent
     void this.sync.sync()
   }
 
+  getDirectoryHandleForDownloads = async () => {
+    if (!this.shouldUseStreamingAPI) {
+      return
+    }
+
+    const directoryHandle = await window.showDirectoryPicker({
+      startIn: 'downloads',
+    })
+
+    return directoryHandle
+  }
+
   downloadFiles = async (files: FileItem[]) => {
-    if (this.platform === Platform.MacDesktop) {
+    // macOS doesn't allow multiple calls to the filepicker at the
+    // same time, so we need to iterate one by one
+    if (this.platform === Platform.MacDesktop || this.platform === Platform.MacWeb) {
+      let directoryHandle: FileSystemDirectoryHandle | undefined
+
+      if (files.length > 1) {
+        try {
+          directoryHandle = await this.getDirectoryHandleForDownloads()
+        } catch (error) {
+          if (error instanceof DOMException && error.name === 'AbortError') {
+            return
+          }
+          console.error(error)
+        }
+      }
+
       for (const file of files) {
         await this.handleFileAction({
           type: FileItemActionType.DownloadFile,
           payload: {
             file,
+            directoryHandle,
           },
         })
       }
@@ -680,5 +717,87 @@ export class FilesController extends AbstractViewController<FilesControllerEvent
         }),
       ),
     )
+  }
+
+  downloadFilesAsZip = async (files: FileItem[]) => {
+    if (!this.shouldUseStreamingAPI) {
+      throw new Error('Device does not support streaming API')
+    }
+
+    const protectedFiles = files.filter((file) => file.protected)
+
+    if (protectedFiles.length > 0) {
+      const authorized = await this.protections.authorizeProtectedActionForItems(
+        protectedFiles,
+        ChallengeReason.AccessProtectedFile,
+      )
+      if (authorized.length === 0) {
+        throw new Error('Authorization is required to download protected files')
+      }
+    }
+
+    const zipFileHandle = await window.showSaveFilePicker({
+      types: [
+        {
+          description: 'ZIP file',
+          accept: { 'application/zip': ['.zip'] },
+        },
+      ],
+    })
+
+    const toast = addToast({
+      type: ToastType.Progress,
+      title: `Downloading ${files.length} files as archive`,
+      message: 'Preparing archive...',
+    })
+
+    try {
+      const zip = await import('@zip.js/zip.js')
+
+      const zipStream = await zipFileHandle.createWritable()
+
+      const zipWriter = new zip.ZipWriter(zipStream, {
+        level: 0,
+      })
+
+      const addedFilenames: string[] = []
+
+      for (const file of files) {
+        const fileStream = new TransformStream()
+
+        let name = parseAndCreateZippableFileName(file.name)
+
+        if (addedFilenames.includes(name)) {
+          name = `${Date.now()} ${name}`
+        }
+
+        zipWriter.add(name, fileStream.readable).catch(console.error)
+
+        addedFilenames.push(name)
+
+        const writer = fileStream.writable.getWriter()
+
+        await this.files
+          .downloadFile(file, async (bytesChunk, progress) => {
+            await writer.write(bytesChunk)
+            updateToast(toast, {
+              message: `Downloading "${truncateString(file.name, 25)}"`,
+              progress: Math.floor(progress.percentComplete),
+            })
+          })
+          .catch(console.error)
+
+        await writer.close()
+      }
+
+      await zipWriter.close()
+    } finally {
+      dismissToast(toast)
+    }
+
+    addToast({
+      type: ToastType.Success,
+      message: `Successfully downloaded ${files.length} files as archive`,
+    })
   }
 }

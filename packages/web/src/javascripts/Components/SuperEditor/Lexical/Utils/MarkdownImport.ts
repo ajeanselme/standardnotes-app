@@ -6,18 +6,15 @@
  *
  */
 
-import { CodeNode, $createCodeNode } from '@lexical/code'
-import {
-  ElementTransformer,
-  TextFormatTransformer,
-  TextMatchTransformer,
-  Transformer,
-  ELEMENT_TRANSFORMERS,
-  TEXT_FORMAT_TRANSFORMERS,
-  TEXT_MATCH_TRANSFORMERS,
-} from '@lexical/markdown'
+/**
+ * Taken from https://github.com/facebook/lexical/blob/main/packages/lexical-markdown/src/MarkdownImport.ts
+ * but modified to allow keeping new lines when importing markdown.
+ */
 
-import { $isListItemNode, $isListNode } from '@lexical/list'
+import { CodeNode, $createCodeNode } from '@lexical/code'
+import { ElementTransformer, TextFormatTransformer, TextMatchTransformer, Transformer } from '@lexical/markdown'
+
+import { $isListItemNode, $isListNode, ListItemNode } from '@lexical/list'
 import { $isQuoteNode } from '@lexical/rich-text'
 import { $findMatchingParent } from '@lexical/utils'
 import {
@@ -33,38 +30,9 @@ import {
   ElementNode,
 } from 'lexical'
 import { IS_APPLE_WEBKIT, IS_IOS, IS_SAFARI } from '../Shared/environment'
+import { TRANSFORMERS, transformersByType } from './MarkdownImportExportUtils'
 
 const PUNCTUATION_OR_SPACE = /[!-/:-@[-`{-~\s]/
-
-function indexBy<T>(list: Array<T>, callback: (arg0: T) => string): Readonly<Record<string, Array<T>>> {
-  const index: Record<string, Array<T>> = {}
-
-  for (const item of list) {
-    const key = callback(item)
-
-    if (index[key]) {
-      index[key].push(item)
-    } else {
-      index[key] = [item]
-    }
-  }
-
-  return index
-}
-
-function transformersByType(transformers: Array<Transformer>): Readonly<{
-  element: Array<ElementTransformer>
-  textFormat: Array<TextFormatTransformer>
-  textMatch: Array<TextMatchTransformer>
-}> {
-  const byType = indexBy(transformers, (t) => t.type)
-
-  return {
-    element: (byType.element || []) as Array<ElementTransformer>,
-    textFormat: (byType['text-format'] || []) as Array<TextFormatTransformer>,
-    textMatch: (byType['text-match'] || []) as Array<TextMatchTransformer>,
-  }
-}
 
 const MARKDOWN_EMPTY_LINE_REG_EXP = /^\s{0,3}$/
 const CODE_BLOCK_REG_EXP = /^```(\w{1,10})?\s?$/
@@ -164,7 +132,7 @@ function importBlocks(
   if (elementNode.isAttached() && lineTextTrimmed.length > 0) {
     const previousNode = elementNode.getPreviousSibling()
     if ($isParagraphNode(previousNode) || $isQuoteNode(previousNode) || $isListNode(previousNode)) {
-      let targetNode: LexicalNode | null = previousNode
+      let targetNode: typeof previousNode | ListItemNode | null = previousNode
 
       if ($isListNode(previousNode)) {
         const lastDescendant = previousNode.getLastDescendant()
@@ -289,18 +257,15 @@ function importTextMatchTransformers(textNode_: TextNode, textMatchTransformers:
 
       const startIndex = match.index || 0
       const endIndex = startIndex + match[0].length
-      let replaceNode, leftTextNode, rightTextNode
+      let replaceNode, newTextNode
 
       if (startIndex === 0) {
         ;[replaceNode, textNode] = textNode.splitText(endIndex)
       } else {
-        ;[leftTextNode, replaceNode, rightTextNode] = textNode.splitText(startIndex, endIndex)
+        ;[, replaceNode, newTextNode] = textNode.splitText(startIndex, endIndex)
       }
-      if (leftTextNode) {
-        importTextMatchTransformers(leftTextNode, textMatchTransformers)
-      }
-      if (rightTextNode) {
-        textNode = rightTextNode
+      if (newTextNode) {
+        importTextMatchTransformers(newTextNode, textMatchTransformers)
       }
       transformer.replace(replaceNode, match)
       continue mainLoop
@@ -391,12 +356,6 @@ function createTextFormatTransformersIndex(
     transformersByTag,
   }
 }
-
-const TRANSFORMERS: Array<Transformer> = [
-  ...ELEMENT_TRANSFORMERS,
-  ...TEXT_FORMAT_TRANSFORMERS,
-  ...TEXT_MATCH_TRANSFORMERS,
-]
 
 export function $convertFromMarkdownString(
   markdown: string,

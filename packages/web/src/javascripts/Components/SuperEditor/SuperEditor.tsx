@@ -1,12 +1,12 @@
 import { WebApplication } from '@/Application/WebApplication'
 import {
-  classNames,
   isPayloadSourceRetrieved,
   PrefKey,
   NativeFeatureIdentifier,
   FeatureStatus,
   GetSuperNoteFeature,
   EditorLineHeightValues,
+  WebAppEvent,
 } from '@standardnotes/snjs'
 import { CSSProperties, FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
 import { BlocksEditor } from './BlocksEditor'
@@ -14,7 +14,6 @@ import { BlocksEditorComposer } from './BlocksEditorComposer'
 import { ItemSelectionPlugin } from './Plugins/ItemSelectionPlugin/ItemSelectionPlugin'
 import { FileNode } from './Plugins/EncryptedFilePlugin/Nodes/FileNode'
 import FilePlugin from './Plugins/EncryptedFilePlugin/FilePlugin'
-import BlockPickerMenuPlugin from './Plugins/BlockPickerPlugin/BlockPickerPlugin'
 import { ErrorBoundary } from '@/Utils/ErrorBoundary'
 import { LinkingController } from '@/Controllers/LinkingController'
 import LinkingControllerProvider from '../../Controllers/LinkingControllerProvider'
@@ -23,28 +22,24 @@ import ItemBubblePlugin from './Plugins/ItemBubblePlugin/ItemBubblePlugin'
 import { NodeObserverPlugin } from './Plugins/NodeObserverPlugin/NodeObserverPlugin'
 import { FilesController } from '@/Controllers/FilesController'
 import FilesControllerProvider from '@/Controllers/FilesControllerProvider'
-import DatetimePlugin from './Plugins/DateTimePlugin/DateTimePlugin'
-import AutoLinkPlugin from './Plugins/AutoLinkPlugin/AutoLinkPlugin'
 import { NoteViewController } from '../NoteView/Controller/NoteViewController'
 import {
   ChangeContentCallbackPlugin,
   ChangeEditorFunction,
 } from './Plugins/ChangeContentCallback/ChangeContentCallback'
-import PasswordPlugin from './Plugins/PasswordPlugin/PasswordPlugin'
 import { useCommandService } from '@/Components/CommandProvider'
-import { SUPER_SHOW_MARKDOWN_PREVIEW } from '@standardnotes/ui-services'
+import { SUPER_SHOW_MARKDOWN_PREVIEW, getPrimaryModifier } from '@standardnotes/ui-services'
 import { SuperNoteMarkdownPreview } from './SuperNoteMarkdownPreview'
 import GetMarkdownPlugin, { GetMarkdownPluginInterface } from './Plugins/GetMarkdownPlugin/GetMarkdownPlugin'
 import { useResponsiveEditorFontSize } from '@/Utils/getPlaintextFontSize'
 import ReadonlyPlugin from './Plugins/ReadonlyPlugin/ReadonlyPlugin'
-import { SuperSearchContextProvider } from './Plugins/SearchPlugin/Context'
-import { SearchPlugin } from './Plugins/SearchPlugin/SearchPlugin'
 import ModalOverlay from '@/Components/Modal/ModalOverlay'
-import CodeOptionsPlugin from './Plugins/CodeOptionsPlugin/CodeOptions'
-import RemoteImagePlugin from './Plugins/RemoteImagePlugin/RemoteImagePlugin'
 import NotEntitledBanner from '../ComponentView/NotEntitledBanner'
 import AutoFocusPlugin from './Plugins/AutoFocusPlugin'
 import usePreference from '@/Hooks/usePreference'
+import BlockPickerMenuPlugin from './Plugins/BlockPickerPlugin/BlockPickerPlugin'
+import { EditorEventSource } from '@/Types/EditorEventSource'
+import { ElementIds } from '@/Constants/ElementIDs'
 
 export const SuperNotePreviewCharLimit = 160
 
@@ -88,9 +83,47 @@ export const SuperEditor: FunctionComponent<Props> = ({
   useEffect(() => {
     return commandService.addCommandHandler({
       command: SUPER_SHOW_MARKDOWN_PREVIEW,
+      category: 'Super notes',
+      description: 'Show markdown preview for current note',
       onKeyDown: () => setShowMarkdownPreview(true),
     })
   }, [commandService])
+
+  useEffect(() => {
+    const platform = application.platform
+    const primaryModifier = getPrimaryModifier(application.platform)
+
+    return commandService.registerExternalKeyboardShortcutHelpItems([
+      {
+        key: 'b',
+        modifiers: [primaryModifier],
+        description: 'Bold',
+        category: 'Formatting',
+        platform: platform,
+      },
+      {
+        key: 'i',
+        modifiers: [primaryModifier],
+        description: 'Italic',
+        category: 'Formatting',
+        platform: platform,
+      },
+      {
+        key: 'u',
+        modifiers: [primaryModifier],
+        description: 'Underline',
+        category: 'Formatting',
+        platform: platform,
+      },
+      {
+        key: 'k',
+        modifiers: [primaryModifier],
+        description: 'Link',
+        category: 'Formatting',
+        platform: platform,
+      },
+    ])
+  }, [application.platform, commandService])
 
   const closeMarkdownPreview = useCallback(() => {
     setShowMarkdownPreview(false)
@@ -187,8 +220,13 @@ export const SuperEditor: FunctionComponent<Props> = ({
     }
   }, [])
 
+  const onFocus = useCallback(() => {
+    application.notifyWebEvent(WebAppEvent.EditorDidFocus, { eventSource: EditorEventSource.UserInteraction })
+  }, [application])
+
   return (
     <div
+      id={ElementIds.SuperEditor}
       className="font-editor relative flex h-full w-full flex-col"
       style={
         {
@@ -207,22 +245,16 @@ export const SuperEditor: FunctionComponent<Props> = ({
             <BlocksEditorComposer readonly={note.current.locked || readonly} initialValue={note.current.text}>
               <BlocksEditor
                 onChange={handleChange}
-                className={classNames(
-                  'blocks-editor relative h-full resize-none px-4 py-4 text-[length:--font-size] focus:shadow-none focus:outline-none',
-                  lineHeight && 'leading-[--line-height]',
-                )}
+                className="blocks-editor h-full resize-none"
                 previewLength={SuperNotePreviewCharLimit}
                 spellcheck={spellcheck}
                 readonly={note.current.locked || readonly}
+                onFocus={onFocus}
               >
                 <ItemSelectionPlugin currentNote={note.current} />
                 <FilePlugin currentNote={note.current} />
                 <ItemBubblePlugin />
-                <BlockPickerMenuPlugin />
                 <GetMarkdownPlugin ref={getMarkdownPlugin} />
-                <DatetimePlugin />
-                <PasswordPlugin />
-                <AutoLinkPlugin />
                 <ChangeContentCallbackPlugin
                   providerCallback={(callback) => (changeEditorFunction.current = callback)}
                 />
@@ -230,11 +262,7 @@ export const SuperEditor: FunctionComponent<Props> = ({
                 <NodeObserverPlugin nodeType={FileNode} onRemove={handleBubbleRemove} />
                 {readonly === undefined && <ReadonlyPlugin note={note.current} />}
                 <AutoFocusPlugin isEnabled={controller.isTemplateNote} />
-                <SuperSearchContextProvider>
-                  <SearchPlugin />
-                </SuperSearchContextProvider>
-                <CodeOptionsPlugin />
-                <RemoteImagePlugin />
+                <BlockPickerMenuPlugin />
               </BlocksEditor>
             </BlocksEditorComposer>
           </FilesControllerProvider>

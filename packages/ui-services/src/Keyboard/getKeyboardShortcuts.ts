@@ -1,5 +1,4 @@
 import { Environment, Platform } from '@standardnotes/models'
-import { isMacPlatform } from './platformCheck'
 import {
   CREATE_NEW_NOTE_KEYBOARD_COMMAND,
   TOGGLE_LIST_PANE_KEYBOARD_COMMAND,
@@ -31,15 +30,15 @@ import {
   SUPER_SEARCH_TOGGLE_REPLACE_MODE,
   CHANGE_EDITOR_WIDTH_COMMAND,
   SUPER_TOGGLE_TOOLBAR,
+  TOGGLE_KEYBOARD_SHORTCUTS_MODAL,
 } from './KeyboardCommands'
 import { KeyboardKey } from './KeyboardKey'
-import { KeyboardModifier } from './KeyboardModifier'
+import { KeyboardModifier, getPrimaryModifier } from './KeyboardModifier'
 import { KeyboardShortcut } from './KeyboardShortcut'
+import { isMacPlatform } from './platformCheck'
 
 export function getKeyboardShortcuts(platform: Platform, _environment: Environment): KeyboardShortcut[] {
-  const isMac = isMacPlatform(platform)
-
-  const primaryModifier = isMac ? KeyboardModifier.Meta : KeyboardModifier.Ctrl
+  const primaryModifier = getPrimaryModifier(platform)
 
   return [
     {
@@ -160,8 +159,9 @@ export function getKeyboardShortcuts(platform: Platform, _environment: Environme
     },
     {
       command: SUPER_SEARCH_TOGGLE_REPLACE_MODE,
-      key: 'h',
-      modifiers: [primaryModifier],
+      key: isMacPlatform(platform) ? undefined : 'h',
+      code: isMacPlatform(platform) ? 'KeyF' : undefined,
+      modifiers: isMacPlatform(platform) ? [KeyboardModifier.Alt, primaryModifier] : [primaryModifier],
     },
     {
       command: SUPER_SEARCH_TOGGLE_CASE_SENSITIVE,
@@ -194,6 +194,11 @@ export function getKeyboardShortcuts(platform: Platform, _environment: Environme
       key: 'j',
       modifiers: [primaryModifier, KeyboardModifier.Shift],
       preventDefault: true,
+    },
+    {
+      command: TOGGLE_KEYBOARD_SHORTCUTS_MODAL,
+      key: '/',
+      modifiers: [primaryModifier],
     },
   ]
 }

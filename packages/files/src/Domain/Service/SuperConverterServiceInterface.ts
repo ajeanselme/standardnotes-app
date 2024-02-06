@@ -1,15 +1,27 @@
-import { FileItem } from '@standardnotes/models'
-import { GenerateUuid } from '@standardnotes/services'
+import { FileItem, PrefKey, PrefValue } from '@standardnotes/models'
 
 export interface SuperConverterServiceInterface {
   isValidSuperString(superString: string): boolean
-  convertSuperStringToOtherFormat: (superString: string, toFormat: 'txt' | 'md' | 'html' | 'json') => Promise<string>
-  convertOtherFormatToSuperString: (otherFormatString: string, fromFormat: 'txt' | 'md' | 'html' | 'json') => string
-  getEmbeddedFileIDsFromSuperString(superString: string): string[]
-  uploadAndReplaceInlineFilesInSuperString(
+  convertSuperStringToOtherFormat: (
     superString: string,
-    uploadFile: (file: File) => Promise<FileItem | undefined>,
-    linkFile: (file: FileItem) => Promise<void>,
-    generateUuid: GenerateUuid,
-  ): Promise<string>
+    toFormat: 'txt' | 'md' | 'html' | 'json' | 'pdf',
+    config?: {
+      embedBehavior?: PrefValue[PrefKey.SuperNoteExportEmbedBehavior]
+      getFileItem?: (id: string) => FileItem | undefined
+      getFileBase64?: (id: string) => Promise<string | undefined>
+      pdf?: {
+        pageSize?: PrefValue[PrefKey.SuperNoteExportPDFPageSize]
+      }
+    },
+  ) => Promise<string>
+  convertOtherFormatToSuperString: (
+    otherFormatString: string,
+    fromFormat: 'txt' | 'md' | 'html' | 'json',
+    options?: {
+      html?: {
+        addLineBreaks?: boolean
+      }
+    },
+  ) => string
+  getEmbeddedFileIDsFromSuperString(superString: string): string[]
 }

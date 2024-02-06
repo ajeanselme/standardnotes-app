@@ -145,6 +145,8 @@ import {
   IsVaultAdmin,
   IsReadonlyVaultMember,
   DesignateSurvivor,
+  SyncBackoffService,
+  SyncBackoffServiceInterface,
 } from '@standardnotes/services'
 import { ItemManager } from '../../Services/Items/ItemManager'
 import { PayloadManager } from '../../Services/Payloads/PayloadManager'
@@ -176,10 +178,14 @@ import { Logger, isNotUndefined, isDeinitable, LoggerInterface } from '@standard
 import { EncryptionOperators } from '@standardnotes/encryption'
 import { AsymmetricMessagePayload, AsymmetricMessageSharedVaultInvite } from '@standardnotes/models'
 import { PureCryptoInterface } from '@standardnotes/sncrypto-common'
+import { SyncFrequencyGuard } from '@Lib/Services/Sync/SyncFrequencyGuard'
+import { SyncFrequencyGuardInterface } from '@Lib/Services/Sync/SyncFrequencyGuardInterface'
 
 export class Dependencies {
   private factory = new Map<symbol, () => unknown>()
   private dependencies = new Map<symbol, unknown>()
+
+  private DEFAULT_SYNC_CALLS_THRESHOLD_PER_MINUTE = 200
 
   constructor(private options: FullyResolvedApplicationOptions) {
     this.dependencies.set(TYPES.DeviceInterface, options.deviceInterface)
@@ -1187,6 +1193,7 @@ export class Dependencies {
 
       return new HomeServerService(
         this.get<DesktopDeviceInterface>(TYPES.DeviceInterface),
+        this.options.platform,
         this.get<InternalEventBus>(TYPES.InternalEventBus),
       )
     })
@@ -1331,6 +1338,25 @@ export class Dependencies {
       )
     })
 
+    this.factory.set(TYPES.WebSocketsService, () => {
+      return new WebSocketsService(
+        this.get<DiskStorageService>(TYPES.DiskStorageService),
+        this.options.webSocketUrl,
+        this.get<WebSocketApiService>(TYPES.WebSocketApiService),
+        this.get<InternalEventBus>(TYPES.InternalEventBus),
+      )
+    })
+
+    this.factory.set(TYPES.SyncFrequencyGuard, () => {
+      return new SyncFrequencyGuard(
+        this.options.syncCallsThresholdPerMinute ?? this.DEFAULT_SYNC_CALLS_THRESHOLD_PER_MINUTE,
+      )
+    })
+
+    this.factory.set(TYPES.SyncBackoffService, () => {
+      return new SyncBackoffService()
+    })
+
     this.factory.set(TYPES.SyncService, () => {
       return new SyncService(
         this.get<ItemManager>(TYPES.ItemManager),
@@ -1347,6 +1373,9 @@ export class Dependencies {
           sleepBetweenBatches: this.options.sleepBetweenBatches,
         },
         this.get<Logger>(TYPES.Logger),
+        this.get<WebSocketsService>(TYPES.WebSocketsService),
+        this.get<SyncFrequencyGuardInterface>(TYPES.SyncFrequencyGuard),
+        this.get<SyncBackoffServiceInterface>(TYPES.SyncBackoffService),
         this.get<InternalEventBus>(TYPES.InternalEventBus),
       )
     })
@@ -1386,15 +1415,6 @@ export class Dependencies {
         this.options.identifier,
         this.get<GetKeyPairs>(TYPES.GetKeyPairs),
         this.get<IsApplicationUsingThirdPartyHost>(TYPES.IsApplicationUsingThirdPartyHost),
-        this.get<InternalEventBus>(TYPES.InternalEventBus),
-      )
-    })
-
-    this.factory.set(TYPES.WebSocketsService, () => {
-      return new WebSocketsService(
-        this.get<DiskStorageService>(TYPES.DiskStorageService),
-        this.options.webSocketUrl,
-        this.get<WebSocketApiService>(TYPES.WebSocketApiService),
         this.get<InternalEventBus>(TYPES.InternalEventBus),
       )
     })

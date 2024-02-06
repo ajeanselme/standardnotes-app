@@ -15,6 +15,8 @@ const PreferencesViewWrapper: FunctionComponent<PreferencesViewWrapperProps> = (
   useEffect(() => {
     return commandService.addCommandHandler({
       command: OPEN_PREFERENCES_COMMAND,
+      category: 'General',
+      description: 'Open preferences',
       onKeyDown: () => application.preferencesController.openPreferences(),
     })
   }, [commandService, application])
@@ -50,7 +52,7 @@ const PreferencesViewWrapper: FunctionComponent<PreferencesViewWrapperProps> = (
       animate="mobile"
       animationVariant="horizontal"
       close={application.preferencesController.closePreferences}
-      className="md:!border-0 md:h-full md:!max-h-full md:!w-full"
+      className="md:h-full md:!max-h-full md:!w-full md:!border-0"
     >
       <PreferencesView
         closePreferences={application.preferencesController.closePreferences}

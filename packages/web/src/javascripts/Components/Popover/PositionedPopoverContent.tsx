@@ -27,12 +27,14 @@ const PositionedPopoverContent = ({
   disableClickOutside,
   disableMobileFullscreenTakeover,
   disableFlip,
+  disableApplyingMobileWidth,
   maxHeight,
   portal = true,
   offset,
   hideOnClickInModal = false,
   setAnimationElement,
   containerClassName,
+  documentElement,
 }: PopoverContentProps) => {
   const [popoverElement, setPopoverElement] = useState<HTMLDivElement | null>(null)
   const popoverRect = useAutoElementRect(popoverElement)
@@ -45,17 +47,18 @@ const PositionedPopoverContent = ({
     y: anchorPoint?.y,
   })
   const anchorRect = anchorPoint ? anchorPointRect : anchorElementRect
-  const documentRect = useDocumentRect()
+  const _documentRect = useDocumentRect()
   const isDesktopScreen = useMediaQuery(MediaQueryBreakpoints.md)
 
   const styles = getPositionedPopoverStyles({
     align,
     anchorRect,
-    documentRect,
+    documentRect: documentElement?.getBoundingClientRect() ?? _documentRect,
     popoverRect: popoverRect ?? popoverElement?.getBoundingClientRect(),
     side,
     disableMobileFullscreenTakeover,
     disableFlip,
+    disableApplyingMobileWidth,
     maxHeightFunction: maxHeight,
     offset,
   })
@@ -73,7 +76,7 @@ const PositionedPopoverContent = ({
   let adjustedStyles: PopoverCSSProperties | undefined = undefined
 
   if (!portal && popoverElement && styles) {
-    adjustedStyles = getAdjustedStylesForNonPortalPopover(popoverElement, styles)
+    adjustedStyles = getAdjustedStylesForNonPortalPopover(popoverElement, styles, documentElement)
   }
 
   usePopoverCloseOnClickOutside({

@@ -13,6 +13,9 @@
   .mac-desktop .app-pane {
     padding-top: 25px;
   }
+  .mac-desktop [data-dialog] [data-mobile-modal-header] {
+    padding-top: 25px;
+  }
 }
 
 @media screen and (min-width: 768px) {
@@ -71,6 +74,16 @@
 .mac-desktop #items-title-bar,
 .mac-desktop #editor-title-bar,
 .mac-desktop [data-preferences-header] {
+  -webkit-app-region: drag;
+}
+
+.mac-desktop [data-dialog-portal]:has([data-dialog])::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 32px;
   -webkit-app-region: drag;
 }
 

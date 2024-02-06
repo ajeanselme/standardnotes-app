@@ -1,6 +1,7 @@
 import type { EditorThemeClasses } from 'lexical'
 
 const BlocksEditorTheme: EditorThemeClasses = {
+  blockCursor: 'Lexical__blockCursor',
   characterLimit: 'Lexical__characterLimit',
   code: 'Lexical__code',
   codeHighlight: {
@@ -59,6 +60,7 @@ const BlocksEditorTheme: EditorThemeClasses = {
     },
     olDepth: ['Lexical__ol1', 'Lexical__ol2', 'Lexical__ol3', 'Lexical__ol4', 'Lexical__ol5'],
     ul: 'Lexical__ul',
+    checklist: 'Lexical__checkList',
   },
   ltr: 'Lexical__ltr',
   mark: 'Lexical__mark',
@@ -80,6 +82,7 @@ const BlocksEditorTheme: EditorThemeClasses = {
   tableCellSortedIndicator: 'Lexical__tableCellSortedIndicator',
   tableResizeRuler: 'Lexical__tableCellResizeRuler',
   tableSelected: 'Lexical__tableSelected',
+  tableSelection: 'Lexical__tableSelection',
   text: {
     bold: 'Lexical__textBold',
     code: 'Lexical__textCode',

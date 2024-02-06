@@ -1,6 +1,6 @@
 {
   "name": "@standardnotes/filepicker",
-  "version": "1.28.108",
+  "version": "1.28.116",
   "engines": {
     "node": ">=16.0.0 <17.0.0"
   },
@@ -29,7 +29,7 @@
     "@standardnotes/common": "^1.50.0",
     "@standardnotes/files": "workspace:*",
     "@standardnotes/utils": "workspace:*",
-    "@types/wicg-file-system-access": "^2020.9.5",
+    "@types/wicg-file-system-access": "^2023.10.4",
     "reflect-metadata": "^0.1.13"
   }
 }

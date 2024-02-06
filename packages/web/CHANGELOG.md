@@ -3,6 +3,269 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.189.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.189.0...@standardnotes/web@3.189.1) (2024-02-05)
+
+**Note:** Version bump only for package @standardnotes/web
+
+# [3.189.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.188.1...@standardnotes/web@3.189.0) (2024-02-03)
+
+### Features
+
+* Improved keyboard navigation for tags and smart views. Tags can now be expanded/closed using left and right arrow keys. ([2d168a6](https://github.com/standardnotes/app/commit/2d168a68cf3f4b04adac0c7abec68a557613238b))
+
+## [3.188.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.188.0...@standardnotes/web@3.188.1) (2024-02-02)
+
+**Note:** Version bump only for package @standardnotes/web
+
+# [3.188.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.187.3...@standardnotes/web@3.188.0) (2024-02-02)
+
+### Features
+
+* Added search bar to navigation panel for searching tags and smart views ([#2815](https://github.com/standardnotes/app/issues/2815)) ([b07abaa](https://github.com/standardnotes/app/commit/b07abaa5df9ad580355f8179bab616002a33af33))
+
+## [3.187.3](https://github.com/standardnotes/app/compare/@standardnotes/web@3.187.2...@standardnotes/web@3.187.3) (2024-01-31)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.187.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.187.1...@standardnotes/web@3.187.2) (2024-01-30)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.187.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.187.0...@standardnotes/web@3.187.1) (2024-01-28)
+
+### Bug Fixes
+
+* The shortcut for displaying the keyboard shortcut help dialog has been changed to `Ctrl + /` ([5a49005](https://github.com/standardnotes/app/commit/5a49005e7961ed254667f62cdba5deba2c792fa7))
+
+# [3.187.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.186.1...@standardnotes/web@3.187.0) (2024-01-27)
+
+### Features
+
+* Added "Keyboard shortcuts" help dialog. Can be opened by pressing Shift + ? ([ff3c45b](https://github.com/standardnotes/app/commit/ff3c45ba359fb53520310c2c44bd368255e31023))
+* Added "Page size" option when exporting Super notes as PDF ([853fab5](https://github.com/standardnotes/app/commit/853fab53ab37567acc23d2f1c5bf8c8d0c4a573b))
+
+## [3.186.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.186.0...@standardnotes/web@3.186.1) (2024-01-24)
+
+**Note:** Version bump only for package @standardnotes/web
+
+# [3.186.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.185.4...@standardnotes/web@3.186.0) (2024-01-24)
+
+### Features
+
+* Super notes can now be exported as PDF ([#2776](https://github.com/standardnotes/app/issues/2776)) ([418d1a7](https://github.com/standardnotes/app/commit/418d1a7371d8fb981de80737a9d1ec4d7772476c))
+
+## [3.185.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.185.3...@standardnotes/web@3.185.4) (2024-01-23)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.185.3](https://github.com/standardnotes/app/compare/@standardnotes/web@3.185.2...@standardnotes/web@3.185.3) (2024-01-21)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.185.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.185.1...@standardnotes/web@3.185.2) (2024-01-20)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.185.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.185.0...@standardnotes/web@3.185.1) (2024-01-20)
+
+**Note:** Version bump only for package @standardnotes/web
+
+# [3.185.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.184.5...@standardnotes/web@3.185.0) (2024-01-20)
+
+### Features
+
+* Editing large notes (greater than 1.5MB) will result in more optimized syncing, in which changes are saved locally immediately, but sync with the server less frequently (roughly every 30 seconds rather than after every change). ([#2768](https://github.com/standardnotes/app/issues/2768)) ([396ee3f](https://github.com/standardnotes/app/commit/396ee3f449c612600bbbe3294c61dc8be46ea365))
+
+## [3.184.5](https://github.com/standardnotes/app/compare/@standardnotes/web@3.184.4...@standardnotes/web@3.184.5) (2024-01-17)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.184.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.184.3...@standardnotes/web@3.184.4) (2024-01-17)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.184.3](https://github.com/standardnotes/app/compare/@standardnotes/web@3.184.2...@standardnotes/web@3.184.3) (2024-01-12)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.184.2](https://github.com/standardnotes/app/compare/@standardnotes/web@3.184.1...@standardnotes/web@3.184.2) (2024-01-11)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.184.1](https://github.com/standardnotes/app/compare/@standardnotes/web@3.184.0...@standardnotes/web@3.184.1) (2024-01-10)
+
+**Note:** Version bump only for package @standardnotes/web
+
+# [3.184.0](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.44...@standardnotes/web@3.184.0) (2024-01-08)
+
+### Features
+
+* Added option to download multiple files as a zip when using the desktop app or a supported browser ([#2748](https://github.com/standardnotes/app/issues/2748)) ([130b63b](https://github.com/standardnotes/app/commit/130b63b1a51a52c547cc40cfc8352946920c5af3))
+
+## [3.183.44](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.43...@standardnotes/web@3.183.44) (2024-01-08)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.43](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.42...@standardnotes/web@3.183.43) (2024-01-06)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.42](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.41...@standardnotes/web@3.183.42) (2024-01-06)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.41](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.40...@standardnotes/web@3.183.41) (2024-01-05)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.40](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.39...@standardnotes/web@3.183.40) (2024-01-04)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.39](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.38...@standardnotes/web@3.183.39) (2024-01-03)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.38](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.37...@standardnotes/web@3.183.38) (2024-01-03)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.37](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.36...@standardnotes/web@3.183.37) (2024-01-03)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.36](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.35...@standardnotes/web@3.183.36) (2024-01-03)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.35](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.34...@standardnotes/web@3.183.35) (2024-01-02)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.34](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.33...@standardnotes/web@3.183.34) (2024-01-02)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.33](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.32...@standardnotes/web@3.183.33) (2024-01-01)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.32](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.31...@standardnotes/web@3.183.32) (2023-12-28)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.31](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.30...@standardnotes/web@3.183.31) (2023-12-28)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.30](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.29...@standardnotes/web@3.183.30) (2023-12-23)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.29](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.28...@standardnotes/web@3.183.29) (2023-12-23)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.28](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.27...@standardnotes/web@3.183.28) (2023-12-22)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.27](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.26...@standardnotes/web@3.183.27) (2023-12-22)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.26](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.25...@standardnotes/web@3.183.26) (2023-12-18)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.25](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.24...@standardnotes/web@3.183.25) (2023-12-15)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.24](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.23...@standardnotes/web@3.183.24) (2023-12-14)
+
+### Reverts
+
+* Revert "refactor: use ariakit for super note popovers" ([ba11551](https://github.com/standardnotes/app/commit/ba11551dfa3bbc2ab4c05cbe6d9cb15adc7bfe95))
+
+## [3.183.23](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.22...@standardnotes/web@3.183.23) (2023-12-14)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.22](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.21...@standardnotes/web@3.183.22) (2023-12-13)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.21](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.20...@standardnotes/web@3.183.21) (2023-12-13)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.20](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.19...@standardnotes/web@3.183.20) (2023-12-12)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.19](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.18...@standardnotes/web@3.183.19) (2023-12-12)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.18](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.17...@standardnotes/web@3.183.18) (2023-12-12)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.17](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.16...@standardnotes/web@3.183.17) (2023-12-11)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.16](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.15...@standardnotes/web@3.183.16) (2023-12-07)
+
+### Reverts
+
+* Revert "chore: pane animation fixes" ([2cc2ddd](https://github.com/standardnotes/app/commit/2cc2dddb9b0c6c274136ac4d0fa2e0090c704eb5))
+
+## [3.183.15](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.14...@standardnotes/web@3.183.15) (2023-12-07)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.14](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.13...@standardnotes/web@3.183.14) (2023-12-06)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.13](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.12...@standardnotes/web@3.183.13) (2023-12-05)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.12](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.11...@standardnotes/web@3.183.12) (2023-12-05)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.11](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.10...@standardnotes/web@3.183.11) (2023-12-05)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.10](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.9...@standardnotes/web@3.183.10) (2023-12-05)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.9](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.8...@standardnotes/web@3.183.9) (2023-12-05)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.8](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.7...@standardnotes/web@3.183.8) (2023-12-04)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.7](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.6...@standardnotes/web@3.183.7) (2023-12-04)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.6](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.5...@standardnotes/web@3.183.6) (2023-12-04)
+
+**Note:** Version bump only for package @standardnotes/web
+
+## [3.183.5](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.4...@standardnotes/web@3.183.5) (2023-12-04)
+
+**Note:** Version bump only for package @standardnotes/web
+
 ## [3.183.4](https://github.com/standardnotes/app/compare/@standardnotes/web@3.183.3...@standardnotes/web@3.183.4) (2023-12-01)
 
 **Note:** Version bump only for package @standardnotes/web

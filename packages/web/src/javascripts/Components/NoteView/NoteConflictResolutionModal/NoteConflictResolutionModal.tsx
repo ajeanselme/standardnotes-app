@@ -1,6 +1,6 @@
 import { NoteType, SNNote, classNames } from '@standardnotes/snjs'
 import Modal, { ModalAction } from '../../Modal/Modal'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { MutuallyExclusiveMediaQueryBreakpoints, useMediaQuery } from '@/Hooks/useMediaQuery'
 import { useApplication } from '../../ApplicationProvider'
 import { confirmDialog } from '@standardnotes/ui-services'
@@ -134,8 +134,8 @@ const NoteConflictResolutionModal = ({
     [close],
   )
 
-  const listRef = useRef<HTMLDivElement>(null)
-  useListKeyboardNavigation(listRef)
+  const [listElement, setListElement] = useState<HTMLDivElement | null>(null)
+  useListKeyboardNavigation(listElement)
 
   const [selectedMobileTab, setSelectedMobileTab] = useState<'list' | 'preview'>('list')
 
@@ -161,6 +161,9 @@ const NoteConflictResolutionModal = ({
 
   const [comparisonScrollPos, setComparisonScrollPos] = useState(0)
   const [shouldSyncComparisonScroll, setShouldSyncComparisonScroll] = useState(true)
+  const onScroll = useCallback(({ target }: { target: EventTarget | null }) => {
+    setComparisonScrollPos((target as HTMLElement).scrollTop)
+  }, [])
 
   return (
     <Modal
@@ -276,7 +279,7 @@ const NoteConflictResolutionModal = ({
           'w-full overflow-y-auto border-r border-border py-1.5 md:flex md:w-auto md:min-w-60 md:flex-col',
           selectedMobileTab !== 'list' && 'hidden md:flex',
         )}
-        ref={listRef}
+        ref={setListElement}
       >
         {allVersions.map((note, index) => (
           <ConflictListItem
@@ -319,7 +322,7 @@ const NoteConflictResolutionModal = ({
                 key={note.uuid}
                 scrollPos={comparisonScrollPos}
                 shouldSyncScroll={shouldSyncComparisonScroll}
-                onScroll={(event) => setComparisonScrollPos((event.target as HTMLElement).scrollTop)}
+                onScroll={onScroll}
               />
             ))}
           </div>

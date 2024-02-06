@@ -13,7 +13,6 @@ import ItemSelectionDropdown from '../ItemSelectionDropdown/ItemSelectionDropdow
 import { ContentType, SNTag } from '@standardnotes/snjs'
 import Button from '../Button/Button'
 import { ClassicFileReader } from '@standardnotes/filepicker'
-import { NoteImportType } from '@standardnotes/ui-services'
 
 const ImportModal = ({ importModalController }: { importModalController: ImportModalController }) => {
   const application = useApplication()
@@ -35,9 +34,9 @@ const ImportModal = ({ importModalController }: { importModalController: ImportM
     close,
   } = importModalController
 
-  const isReadyToImport = files.length > 0 && files.every((file) => file.status === 'ready')
+  const isReadyToImport = files.length > 0 && files.every((file) => file.status === 'pending' && file.service)
   const importSuccessOrError =
-    files.length > 0 && files.every((file) => file.status === 'success' || file.status === 'error')
+    files.length > 0 && files.every((file) => file.status === 'finished' || file.status === 'error')
 
   const modalActions: ModalAction[] = useMemo(
     () => [
@@ -60,7 +59,7 @@ const ImportModal = ({ importModalController }: { importModalController: ImportM
   )
 
   const selectFiles = useCallback(
-    async (service?: NoteImportType) => {
+    async (service?: string) => {
       const files = await ClassicFileReader.selectFiles()
 
       addFiles(files, service)
@@ -71,7 +70,7 @@ const ImportModal = ({ importModalController }: { importModalController: ImportM
   return (
     <ModalOverlay isOpen={isVisible} close={close}>
       <Modal title="Import" close={close} actions={modalActions} className="flex flex-col">
-        <div className="min-h-0 flex-grow px-4 py-4">
+        <div className="min-h-0 flex-grow overflow-y-auto px-4 py-4">
           {!files.length && <ImportModalInitialPage setFiles={setFiles} selectFiles={selectFiles} />}
           {files.length > 0 && (
             <>

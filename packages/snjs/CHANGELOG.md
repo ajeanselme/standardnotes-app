@@ -3,6 +3,98 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.207.0](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.206.0...@standardnotes/snjs@2.207.0) (2024-02-02)
+
+### Features
+
+* Added search bar to navigation panel for searching tags and smart views ([#2815](https://github.com/standardnotes/app/issues/2815)) ([b07abaa](https://github.com/standardnotes/app/commit/b07abaa5df9ad580355f8179bab616002a33af33))
+
+# [2.206.0](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.205.2...@standardnotes/snjs@2.206.0) (2024-01-27)
+
+### Features
+
+* Added "Keyboard shortcuts" help dialog. Can be opened by pressing Shift + ? ([ff3c45b](https://github.com/standardnotes/app/commit/ff3c45ba359fb53520310c2c44bd368255e31023))
+
+## [2.205.2](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.205.1...@standardnotes/snjs@2.205.2) (2024-01-24)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.205.1](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.205.0...@standardnotes/snjs@2.205.1) (2024-01-23)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+# [2.205.0](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.16...@standardnotes/snjs@2.205.0) (2024-01-20)
+
+### Features
+
+* Editing large notes (greater than 1.5MB) will result in more optimized syncing, in which changes are saved locally immediately, but sync with the server less frequently (roughly every 30 seconds rather than after every change). ([#2768](https://github.com/standardnotes/app/issues/2768)) ([396ee3f](https://github.com/standardnotes/app/commit/396ee3f449c612600bbbe3294c61dc8be46ea365))
+
+## [2.204.16](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.15...@standardnotes/snjs@2.204.16) (2024-01-12)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.15](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.14...@standardnotes/snjs@2.204.15) (2024-01-11)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.14](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.13...@standardnotes/snjs@2.204.14) (2024-01-06)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.13](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.12...@standardnotes/snjs@2.204.13) (2024-01-06)
+
+### Bug Fixes
+
+* Fixes issue where self-hosted accounts may not have loaded correct server ([acd20dc](https://github.com/standardnotes/app/commit/acd20dcc70f4f84f07fbbd75fedcea459c22681c))
+
+## [2.204.12](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.11...@standardnotes/snjs@2.204.12) (2024-01-05)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.11](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.10...@standardnotes/snjs@2.204.11) (2024-01-02)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.10](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.9...@standardnotes/snjs@2.204.10) (2023-12-28)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.9](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.8...@standardnotes/snjs@2.204.9) (2023-12-28)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.8](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.7...@standardnotes/snjs@2.204.8) (2023-12-22)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.7](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.6...@standardnotes/snjs@2.204.7) (2023-12-12)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.6](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.5...@standardnotes/snjs@2.204.6) (2023-12-11)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.5](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.4...@standardnotes/snjs@2.204.5) (2023-12-05)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.4](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.3...@standardnotes/snjs@2.204.4) (2023-12-05)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.3](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.2...@standardnotes/snjs@2.204.3) (2023-12-04)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.2](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.1...@standardnotes/snjs@2.204.2) (2023-12-04)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
+## [2.204.1](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.204.0...@standardnotes/snjs@2.204.1) (2023-12-04)
+
+**Note:** Version bump only for package @standardnotes/snjs
+
 # [2.204.0](https://github.com/standardnotes/app/compare/@standardnotes/snjs@2.203.2...@standardnotes/snjs@2.204.0) (2023-11-30)
 
 ### Features

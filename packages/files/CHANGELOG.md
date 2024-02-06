@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.20.1](https://github.com/standardnotes/app/compare/@standardnotes/files@1.20.0...@standardnotes/files@1.20.1) (2024-02-02)
+
+**Note:** Version bump only for package @standardnotes/files
+
+# [1.20.0](https://github.com/standardnotes/app/compare/@standardnotes/files@1.19.0...@standardnotes/files@1.20.0) (2024-01-27)
+
+### Features
+
+* Added "Page size" option when exporting Super notes as PDF ([853fab5](https://github.com/standardnotes/app/commit/853fab53ab37567acc23d2f1c5bf8c8d0c4a573b))
+
+# [1.19.0](https://github.com/standardnotes/app/compare/@standardnotes/files@1.18.10...@standardnotes/files@1.19.0) (2024-01-24)
+
+### Features
+
+* Super notes can now be exported as PDF ([#2776](https://github.com/standardnotes/app/issues/2776)) ([418d1a7](https://github.com/standardnotes/app/commit/418d1a7371d8fb981de80737a9d1ec4d7772476c))
+
+## [1.18.10](https://github.com/standardnotes/app/compare/@standardnotes/files@1.18.9...@standardnotes/files@1.18.10) (2024-01-20)
+
+**Note:** Version bump only for package @standardnotes/files
+
+## [1.18.9](https://github.com/standardnotes/app/compare/@standardnotes/files@1.18.8...@standardnotes/files@1.18.9) (2023-12-28)
+
+**Note:** Version bump only for package @standardnotes/files
+
+## [1.18.8](https://github.com/standardnotes/app/compare/@standardnotes/files@1.18.7...@standardnotes/files@1.18.8) (2023-12-22)
+
+**Note:** Version bump only for package @standardnotes/files
+
+## [1.18.7](https://github.com/standardnotes/app/compare/@standardnotes/files@1.18.6...@standardnotes/files@1.18.7) (2023-12-11)
+
+**Note:** Version bump only for package @standardnotes/files
+
 ## [1.18.6](https://github.com/standardnotes/app/compare/@standardnotes/files@1.18.5...@standardnotes/files@1.18.6) (2023-11-30)
 
 **Note:** Version bump only for package @standardnotes/files

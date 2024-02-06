@@ -3,6 +3,74 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.69.0](https://github.com/standardnotes/app/compare/@standardnotes/services@1.68.3...@standardnotes/services@1.69.0) (2024-02-02)
+
+### Features
+
+* Added search bar to navigation panel for searching tags and smart views ([#2815](https://github.com/standardnotes/app/issues/2815)) ([b07abaa](https://github.com/standardnotes/app/commit/b07abaa5df9ad580355f8179bab616002a33af33))
+
+## [1.68.3](https://github.com/standardnotes/app/compare/@standardnotes/services@1.68.2...@standardnotes/services@1.68.3) (2024-01-27)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.68.2](https://github.com/standardnotes/app/compare/@standardnotes/services@1.68.1...@standardnotes/services@1.68.2) (2024-01-24)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.68.1](https://github.com/standardnotes/app/compare/@standardnotes/services@1.68.0...@standardnotes/services@1.68.1) (2024-01-23)
+
+**Note:** Version bump only for package @standardnotes/services
+
+# [1.68.0](https://github.com/standardnotes/app/compare/@standardnotes/services@1.67.11...@standardnotes/services@1.68.0) (2024-01-20)
+
+### Features
+
+* Editing large notes (greater than 1.5MB) will result in more optimized syncing, in which changes are saved locally immediately, but sync with the server less frequently (roughly every 30 seconds rather than after every change). ([#2768](https://github.com/standardnotes/app/issues/2768)) ([396ee3f](https://github.com/standardnotes/app/commit/396ee3f449c612600bbbe3294c61dc8be46ea365))
+
+## [1.67.11](https://github.com/standardnotes/app/compare/@standardnotes/services@1.67.10...@standardnotes/services@1.67.11) (2024-01-11)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.67.10](https://github.com/standardnotes/app/compare/@standardnotes/services@1.67.9...@standardnotes/services@1.67.10) (2024-01-05)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.67.9](https://github.com/standardnotes/app/compare/@standardnotes/services@1.67.8...@standardnotes/services@1.67.9) (2024-01-02)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.67.8](https://github.com/standardnotes/app/compare/@standardnotes/services@1.67.7...@standardnotes/services@1.67.8) (2023-12-28)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.67.7](https://github.com/standardnotes/app/compare/@standardnotes/services@1.67.6...@standardnotes/services@1.67.7) (2023-12-28)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.67.6](https://github.com/standardnotes/app/compare/@standardnotes/services@1.67.5...@standardnotes/services@1.67.6) (2023-12-22)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.67.5](https://github.com/standardnotes/app/compare/@standardnotes/services@1.67.4...@standardnotes/services@1.67.5) (2023-12-11)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.67.4](https://github.com/standardnotes/app/compare/@standardnotes/services@1.67.3...@standardnotes/services@1.67.4) (2023-12-05)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.67.3](https://github.com/standardnotes/app/compare/@standardnotes/services@1.67.2...@standardnotes/services@1.67.3) (2023-12-04)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.67.2](https://github.com/standardnotes/app/compare/@standardnotes/services@1.67.1...@standardnotes/services@1.67.2) (2023-12-04)
+
+**Note:** Version bump only for package @standardnotes/services
+
+## [1.67.1](https://github.com/standardnotes/app/compare/@standardnotes/services@1.67.0...@standardnotes/services@1.67.1) (2023-12-04)
+
+**Note:** Version bump only for package @standardnotes/services
+
 # [1.67.0](https://github.com/standardnotes/app/compare/@standardnotes/services@1.66.1...@standardnotes/services@1.67.0) (2023-11-30)
 
 ### Features

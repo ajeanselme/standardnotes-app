@@ -36,3 +36,5 @@ packages/snjs/dist
 !.yarn/sdks
 !.yarn/versions
 !.yarn/cache
+.github
+.yarn

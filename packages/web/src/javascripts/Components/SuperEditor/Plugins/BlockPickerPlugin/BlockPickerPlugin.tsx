@@ -9,7 +9,6 @@ import { BlockPickerMenuItem } from './BlockPickerMenuItem'
 import { GetDynamicPasswordBlocks, GetPasswordBlockOption } from '../Blocks/Password'
 import { GetDynamicTableBlocks, GetTableBlockOption } from '../Blocks/Table'
 import Popover from '@/Components/Popover/Popover'
-import { PopoverClassNames } from '../ClassNames'
 import { GetDatetimeBlockOptions } from '../Blocks/DateTime'
 import { isMobileScreen } from '@/Utils'
 import { useApplication } from '@/Components/ApplicationProvider'
@@ -31,7 +30,7 @@ import { GetDividerBlockOption } from '../Blocks/Divider'
 import { GetCollapsibleBlockOption } from '../Blocks/Collapsible'
 import { GetEmbedsBlockOptions } from '../Blocks/Embeds'
 
-export default function BlockPickerMenuPlugin(): JSX.Element {
+export default function BlockPickerMenuPlugin({ popoverZIndex }: { popoverZIndex?: string }): JSX.Element {
   const [editor] = useLexicalComposerContext()
   const application = useApplication()
   const [modal, showModal] = useModal()
@@ -131,26 +130,25 @@ export default function BlockPickerMenuPlugin(): JSX.Element {
               disableMobileFullscreenTakeover={true}
               side={isMobileScreen() ? 'top' : 'bottom'}
               maxHeight={(mh) => mh / 2}
+              overrideZIndex={popoverZIndex}
             >
-              <div className={PopoverClassNames}>
-                <ul>
-                  {options.map((option, i: number) => (
-                    <BlockPickerMenuItem
-                      index={i}
-                      isSelected={selectedIndex === i}
-                      onClick={() => {
-                        setHighlightedIndex(i)
-                        selectOptionAndCleanUp(option)
-                      }}
-                      onMouseEnter={() => {
-                        setHighlightedIndex(i)
-                      }}
-                      key={option.key}
-                      option={option}
-                    />
-                  ))}
-                </ul>
-              </div>
+              <ul>
+                {options.map((option, i: number) => (
+                  <BlockPickerMenuItem
+                    index={i}
+                    isSelected={selectedIndex === i}
+                    onClick={() => {
+                      setHighlightedIndex(i)
+                      selectOptionAndCleanUp(option)
+                    }}
+                    onMouseEnter={() => {
+                      setHighlightedIndex(i)
+                    }}
+                    key={option.key}
+                    option={option}
+                  />
+                ))}
+              </ul>
             </Popover>
           )
         }}

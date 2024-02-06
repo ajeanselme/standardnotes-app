@@ -15,28 +15,26 @@ import { SimplenoteConverter } from './SimplenoteConverter/SimplenoteConverter'
 import { readFileAsText } from './Utils'
 import {
   DecryptedItemInterface,
-  DecryptedTransferPayload,
   FileItem,
   ItemContent,
   NoteContent,
-  NoteMutator,
   SNNote,
-  isNote,
+  SNTag,
+  TagContent,
+  isFile,
 } from '@standardnotes/models'
 import { HTMLConverter } from './HTMLConverter/HTMLConverter'
-import { SuperConverterServiceInterface } from '@standardnotes/snjs/dist/@types'
 import { SuperConverter } from './SuperConverter/SuperConverter'
+import { CleanupItemsFn, Converter, InsertNoteFn, InsertTagFn, LinkItemsFn, UploadFileFn } from './Converter'
+import { ConversionResult } from './ConversionResult'
+import { FilesClientInterface, SuperConverterServiceInterface } from '@standardnotes/files'
+import { ContentType } from '@standardnotes/domain-core'
 
-export type NoteImportType = 'plaintext' | 'evernote' | 'google-keep' | 'simplenote' | 'aegis' | 'html' | 'super'
+const BytesInOneMegabyte = 1_000_000
+const NoteSizeThreshold = 3 * BytesInOneMegabyte
 
 export class Importer {
-  aegisConverter: AegisToAuthenticatorConverter
-  googleKeepConverter: GoogleKeepConverter
-  simplenoteConverter: SimplenoteConverter
-  plaintextConverter: PlaintextConverter
-  evernoteConverter: EvernoteConverter
-  htmlConverter: HTMLConverter
-  superConverter: SuperConverter
+  converters: Set<Converter> = new Set()
 
   constructor(
     private features: FeaturesClientInterface,
@@ -56,138 +54,220 @@ export class Importer {
       linkItems(
         item: DecryptedItemInterface<ItemContent>,
         itemToLink: DecryptedItemInterface<ItemContent>,
+        sync: boolean,
       ): Promise<void>
     },
     private _generateUuid: GenerateUuid,
+    private files: FilesClientInterface,
   ) {
-    this.aegisConverter = new AegisToAuthenticatorConverter(_generateUuid)
-    this.googleKeepConverter = new GoogleKeepConverter(this.superConverterService, _generateUuid)
-    this.simplenoteConverter = new SimplenoteConverter(_generateUuid)
-    this.plaintextConverter = new PlaintextConverter(this.superConverterService, _generateUuid)
-    this.evernoteConverter = new EvernoteConverter(this.superConverterService, _generateUuid)
-    this.htmlConverter = new HTMLConverter(this.superConverterService, _generateUuid)
-    this.superConverter = new SuperConverter(this.superConverterService, _generateUuid)
+    this.registerNativeConverters()
   }
 
-  detectService = async (file: File): Promise<NoteImportType | null> => {
+  registerNativeConverters() {
+    this.converters.add(new AegisToAuthenticatorConverter())
+    this.converters.add(new GoogleKeepConverter())
+    this.converters.add(new SimplenoteConverter())
+    this.converters.add(new PlaintextConverter())
+    this.converters.add(new EvernoteConverter(this._generateUuid))
+    this.converters.add(new HTMLConverter())
+    this.converters.add(new SuperConverter(this.superConverterService))
+  }
+
+  detectService = async (file: File): Promise<string | null> => {
     const content = await readFileAsText(file)
 
     const { ext } = parseFileName(file.name)
 
-    if (ext === 'enex') {
-      return 'evernote'
-    }
+    for (const converter of this.converters) {
+      const isCorrectType = converter.getSupportedFileTypes && converter.getSupportedFileTypes().includes(file.type)
+      const isCorrectExtension = converter.getFileExtension && converter.getFileExtension() === ext
 
-    try {
-      const json = JSON.parse(content)
-
-      if (AegisToAuthenticatorConverter.isValidAegisJson(json)) {
-        return 'aegis'
+      if (!isCorrectType && !isCorrectExtension) {
+        continue
       }
 
-      if (GoogleKeepConverter.isValidGoogleKeepJson(json)) {
-        return 'google-keep'
+      if (converter.isContentValid(content)) {
+        return converter.getImportType()
       }
-
-      if (SimplenoteConverter.isValidSimplenoteJson(json)) {
-        return 'simplenote'
-      }
-    } catch {
-      /* empty */
-    }
-
-    if (file.type === 'application/json' && this.superConverterService.isValidSuperString(content)) {
-      return 'super'
-    }
-
-    if (PlaintextConverter.isValidPlaintextFile(file)) {
-      return 'plaintext'
-    }
-
-    if (HTMLConverter.isHTMLFile(file)) {
-      return 'html'
     }
 
     return null
   }
 
-  async getPayloadsFromFile(file: File, type: NoteImportType): Promise<DecryptedTransferPayload[]> {
-    const isEntitledToSuper =
+  insertNote: InsertNoteFn = async ({
+    createdAt,
+    updatedAt,
+    title,
+    text,
+    noteType,
+    editorIdentifier,
+    trashed = false,
+    archived = false,
+    pinned = false,
+    useSuperIfPossible,
+  }) => {
+    if (noteType === NoteType.Super && !this.canUseSuper()) {
+      noteType = undefined
+    }
+
+    if (
+      editorIdentifier &&
+      this.features.getFeatureStatus(NativeFeatureIdentifier.create(editorIdentifier).getValue()) !==
+        FeatureStatus.Entitled
+    ) {
+      editorIdentifier = undefined
+    }
+
+    const shouldUseSuper = useSuperIfPossible && this.canUseSuper()
+
+    const noteSize = new Blob([text]).size
+
+    if (noteSize > NoteSizeThreshold) {
+      throw new Error('Note is too large to import')
+    }
+
+    const note = this.items.createTemplateItem<NoteContent, SNNote>(
+      ContentType.TYPES.Note,
+      {
+        title,
+        text,
+        references: [],
+        noteType: shouldUseSuper ? NoteType.Super : noteType,
+        trashed,
+        archived,
+        pinned,
+        editorIdentifier: shouldUseSuper ? NativeFeatureIdentifier.TYPES.SuperEditor : editorIdentifier,
+      },
+      {
+        created_at: createdAt,
+        updated_at: updatedAt,
+      },
+    )
+
+    return await this.mutator.insertItem(note)
+  }
+
+  insertTag: InsertTagFn = async ({ createdAt, updatedAt, title, references }) => {
+    const tag = this.items.createTemplateItem<TagContent, SNTag>(
+      ContentType.TYPES.Tag,
+      {
+        title,
+        expanded: false,
+        iconString: '',
+        references,
+      },
+      {
+        created_at: createdAt,
+        updated_at: updatedAt,
+      },
+    )
+
+    return await this.mutator.insertItem(tag)
+  }
+
+  canUploadFiles = (): boolean => {
+    const status = this.features.getFeatureStatus(
+      NativeFeatureIdentifier.create(NativeFeatureIdentifier.TYPES.Files).getValue(),
+    )
+
+    return status === FeatureStatus.Entitled
+  }
+
+  uploadFile: UploadFileFn = async (file) => {
+    if (!this.canUploadFiles()) {
+      return undefined
+    }
+
+    try {
+      return await this.filesController.uploadNewFile(file, { showToast: true })
+    } catch (error) {
+      console.error(error)
+      return undefined
+    }
+  }
+
+  linkItems: LinkItemsFn = async (item, itemToLink) => {
+    await this.linkingController.linkItems(item, itemToLink, false)
+  }
+
+  cleanupItems: CleanupItemsFn = async (items) => {
+    for (const item of items) {
+      if (isFile(item)) {
+        await this.files.deleteFile(item)
+      }
+      await this.mutator.deleteItems([item])
+    }
+  }
+
+  canUseSuper = (): boolean => {
+    return (
       this.features.getFeatureStatus(
         NativeFeatureIdentifier.create(NativeFeatureIdentifier.TYPES.SuperEditor).getValue(),
       ) === FeatureStatus.Entitled
-    if (type === 'super') {
-      if (!isEntitledToSuper) {
-        throw new Error('Importing Super notes requires a subscription.')
-      }
-      return [await this.superConverter.convertSuperFileToNote(file)]
-    } else if (type === 'aegis') {
-      const isEntitledToAuthenticator =
-        this.features.getFeatureStatus(
-          NativeFeatureIdentifier.create(NativeFeatureIdentifier.TYPES.TokenVaultEditor).getValue(),
-        ) === FeatureStatus.Entitled
-      return [await this.aegisConverter.convertAegisBackupFileToNote(file, isEntitledToAuthenticator)]
-    } else if (type === 'google-keep') {
-      return [await this.googleKeepConverter.convertGoogleKeepBackupFileToNote(file, isEntitledToSuper)]
-    } else if (type === 'simplenote') {
-      return await this.simplenoteConverter.convertSimplenoteBackupFileToNotes(file)
-    } else if (type === 'evernote') {
-      return await this.evernoteConverter.convertENEXFileToNotesAndTags(file, isEntitledToSuper)
-    } else if (type === 'plaintext') {
-      return [await this.plaintextConverter.convertPlaintextFileToNote(file, isEntitledToSuper)]
-    } else if (type === 'html') {
-      return [await this.htmlConverter.convertHTMLFileToNote(file, isEntitledToSuper)]
+    )
+  }
+
+  convertHTMLToSuper = (html: string): string => {
+    if (!this.canUseSuper()) {
+      return html
     }
 
-    return []
+    return this.superConverterService.convertOtherFormatToSuperString(html, 'html')
   }
 
-  async importFromTransferPayloads(payloads: DecryptedTransferPayload[]) {
-    const insertedItems = await Promise.all(
-      payloads.map(async (payload) => {
-        const content = payload.content as NoteContent
-        const note = this.items.createTemplateItem(
-          payload.content_type,
-          {
-            text: content.text,
-            title: content.title,
-            noteType: content.noteType,
-            editorIdentifier: content.editorIdentifier,
-            references: content.references,
-          },
-          {
-            created_at: payload.created_at,
-            updated_at: payload.updated_at,
-            uuid: payload.uuid,
-          },
-        )
-        return this.mutator.insertItem(note)
-      }),
-    )
-    return insertedItems
+  convertMarkdownToSuper = (markdown: string): string => {
+    if (!this.canUseSuper()) {
+      return markdown
+    }
+
+    return this.superConverterService.convertOtherFormatToSuperString(markdown, 'md')
   }
 
-  async uploadAndReplaceInlineFilesInInsertedItems(insertedItems: DecryptedItemInterface<ItemContent>[]) {
-    for (const item of insertedItems) {
-      if (!isNote(item)) {
+  async importFromFile(file: File, type: string): Promise<ConversionResult> {
+    const canUseSuper = this.canUseSuper()
+
+    if (type === 'super' && !canUseSuper) {
+      throw new Error('Importing Super notes requires a subscription')
+    }
+
+    const successful: ConversionResult['successful'] = []
+    const errored: ConversionResult['errored'] = []
+
+    for (const converter of this.converters) {
+      const isCorrectType = converter.getImportType() === type
+
+      if (!isCorrectType) {
         continue
       }
-      if (item.noteType !== NoteType.Super) {
-        continue
+
+      const content = await readFileAsText(file)
+
+      if (!converter.isContentValid(content)) {
+        throw new Error('Content is not valid')
       }
-      try {
-        const text = await this.superConverterService.uploadAndReplaceInlineFilesInSuperString(
-          item.text,
-          async (file) => await this.filesController.uploadNewFile(file, { showToast: true, note: item }),
-          async (file) => await this.linkingController.linkItems(item, file),
-          this._generateUuid,
-        )
-        await this.mutator.changeItem<NoteMutator>(item, (mutator) => {
-          mutator.text = text
-        })
-      } catch (error) {
-        console.error(error)
-      }
+
+      const result = await converter.convert(file, {
+        insertNote: this.insertNote,
+        insertTag: this.insertTag,
+        canUploadFiles: this.canUploadFiles(),
+        uploadFile: this.uploadFile,
+        canUseSuper,
+        convertHTMLToSuper: this.convertHTMLToSuper,
+        convertMarkdownToSuper: this.convertMarkdownToSuper,
+        readFileAsText,
+        linkItems: this.linkItems,
+        cleanupItems: this.cleanupItems,
+      })
+
+      successful.push(...result.successful)
+      errored.push(...result.errored)
+
+      break
+    }
+
+    return {
+      successful,
+      errored,
     }
   }
 }

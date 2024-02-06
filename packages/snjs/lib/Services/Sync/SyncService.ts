@@ -84,6 +84,9 @@ import {
   SyncEventReceivedAsymmetricMessagesData,
   SyncOpStatus,
   ApplicationSyncOptions,
+  WebSocketsServiceEvent,
+  WebSocketsService,
+  SyncBackoffServiceInterface,
 } from '@standardnotes/services'
 import { OfflineSyncResponse } from './Offline/Response'
 import {
@@ -95,9 +98,12 @@ import {
 import { CreatePayloadFromRawServerItem } from './Account/Utilities'
 import { DecryptedServerConflictMap, TrustedServerConflictMap } from './Account/ServerConflictMap'
 import { ContentType } from '@standardnotes/domain-core'
+import { SyncFrequencyGuardInterface } from './SyncFrequencyGuardInterface'
 
 const DEFAULT_MAJOR_CHANGE_THRESHOLD = 15
 const INVALID_SESSION_RESPONSE_STATUS = 401
+const TOO_MANY_REQUESTS_RESPONSE_STATUS = 429
+const DEFAULT_AUTO_SYNC_INTERVAL = 30_000
 
 /** Content types appearing first are always mapped first */
 const ContentTypeLocalLoadPriorty = [
@@ -149,6 +155,9 @@ export class SyncService
   public lastSyncInvokationPromise?: Promise<unknown>
   public currentSyncRequestPromise?: Promise<void>
 
+  private autoSyncInterval?: NodeJS.Timer
+  private wasNotifiedOfItemsChangeOnServer = false
+
   constructor(
     private itemManager: ItemManager,
     private sessionManager: SessionManager,
@@ -161,6 +170,9 @@ export class SyncService
     private identifier: string,
     private readonly options: ApplicationSyncOptions,
     private logger: LoggerInterface,
+    private sockets: WebSocketsService,
+    private syncFrequencyGuard: SyncFrequencyGuardInterface,
+    private syncBackoffService: SyncBackoffServiceInterface,
     protected override internalEventBus: InternalEventBusInterface,
   ) {
     super(internalEventBus)
@@ -187,6 +199,10 @@ export class SyncService
 
   public override deinit(): void {
     this.dealloced = true
+    if (this.autoSyncInterval) {
+      clearInterval(this.autoSyncInterval)
+    }
+    ;(this.autoSyncInterval as unknown) = undefined
     ;(this.sessionManager as unknown) = undefined
     ;(this.itemManager as unknown) = undefined
     ;(this.encryptionService as unknown) = undefined
@@ -349,6 +365,28 @@ export class SyncService
     this.opStatus.setDatabaseLoadStatus(0, 0, true)
   }
 
+  beginAutoSyncTimer(): void {
+    this.autoSyncInterval = setInterval(this.autoSync.bind(this), DEFAULT_AUTO_SYNC_INTERVAL)
+  }
+
+  private autoSync(): void {
+    if (!this.sockets.isWebSocketConnectionOpen()) {
+      this.logger.debug('WebSocket connection is closed, doing autosync')
+
+      void this.sync({ sourceDescription: 'Auto Sync' })
+
+      return
+    }
+
+    if (this.wasNotifiedOfItemsChangeOnServer) {
+      this.logger.debug('Was notified of items changed on server, doing autosync')
+
+      this.wasNotifiedOfItemsChangeOnServer = false
+
+      void this.sync({ sourceDescription: 'WebSockets Event - Items Changed On Server' })
+    }
+  }
+
   private async processPayloadBatch(
     batch: FullyFormedPayloadInterface<ItemContent>[],
     currentPosition?: number,
@@ -416,7 +454,11 @@ export class SyncService
   }
 
   private itemsNeedingSync() {
-    return this.itemManager.getDirtyItems()
+    const dirtyItems = this.itemManager.getDirtyItems()
+
+    const itemsWithoutBackoffPenalty = dirtyItems.filter((item) => !this.syncBackoffService.isItemInBackoff(item))
+
+    return itemsWithoutBackoffPenalty
   }
 
   public async markAllItemsAsNeedingSyncAndPersist(): Promise<void> {
@@ -609,7 +651,8 @@ export class SyncService
     const syncInProgress = this.opStatus.syncInProgress
     const databaseLoaded = this.databaseLoaded
     const canExecuteSync = !this.syncLock
-    const shouldExecuteSync = canExecuteSync && databaseLoaded && !syncInProgress
+    const syncLimitReached = this.syncFrequencyGuard.isSyncCallsThresholdReachedThisMinute()
+    const shouldExecuteSync = canExecuteSync && databaseLoaded && !syncInProgress && !syncLimitReached
 
     if (shouldExecuteSync) {
       this.syncLock = true
@@ -859,6 +902,12 @@ export class SyncService
 
     const { items, beginDate, frozenDirtyIndex, neverSyncedDeleted } = await this.prepareForSync(options)
 
+    if (options.mode === SyncMode.LocalOnly) {
+      this.logger.debug('Syncing local only, skipping remote sync request')
+      releaseLock()
+      return
+    }
+
     const inTimeResolveQueue = this.getPendingRequestsMadeInTimeToPiggyBackOnCurrentRequest()
 
     if (!shouldExecuteSync) {
@@ -906,7 +955,7 @@ export class SyncService
       return
     }
 
-    if (options.checkIntegrity) {
+    if (options.checkIntegrity && online) {
       await this.notifyEventSync(SyncEvent.SyncRequestsIntegrityCheck, {
         source: options.source as SyncSource,
       })
@@ -965,6 +1014,10 @@ export class SyncService
 
     if (response.status === INVALID_SESSION_RESPONSE_STATUS) {
       void this.notifyEvent(SyncEvent.InvalidSession)
+    }
+
+    if (response.status === TOO_MANY_REQUESTS_RESPONSE_STATUS) {
+      void this.notifyEvent(SyncEvent.TooManyRequests)
     }
 
     this.opStatus?.setError(response.error)
@@ -1258,6 +1311,8 @@ export class SyncService
 
     this.lastSyncDate = new Date()
 
+    this.syncFrequencyGuard.incrementCallsPerMinute()
+
     if (operation instanceof AccountSyncOperation && operation.numberOfItemsInvolved >= this.majorChangeThreshold) {
       void this.notifyEvent(SyncEvent.MajorDataChange)
     }
@@ -1400,8 +1455,15 @@ export class SyncService
   }
 
   async handleEvent(event: InternalEventInterface): Promise<void> {
-    if (event.type === IntegrityEvent.IntegrityCheckCompleted) {
-      await this.handleIntegrityCheckEventResponse(event.payload as IntegrityEventPayload)
+    switch (event.type) {
+      case IntegrityEvent.IntegrityCheckCompleted:
+        await this.handleIntegrityCheckEventResponse(event.payload as IntegrityEventPayload)
+        break
+      case WebSocketsServiceEvent.ItemsChangedOnServer:
+        this.wasNotifiedOfItemsChangeOnServer = true
+        break
+      default:
+        break
     }
   }
 

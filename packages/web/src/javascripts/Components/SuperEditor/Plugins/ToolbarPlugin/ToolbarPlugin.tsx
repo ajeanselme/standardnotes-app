@@ -65,6 +65,7 @@ import { useStateRef } from '@/Hooks/useStateRef'
 import { getDOMRangeRect } from '../../Lexical/Utils/getDOMRangeRect'
 import { getPositionedPopoverStyles } from '@/Components/Popover/GetPositionedPopoverStyles'
 import usePreference from '@/Hooks/usePreference'
+import { ElementIds } from '@/Constants/ElementIDs'
 
 const TOGGLE_LINK_AND_EDIT_COMMAND = createCommand<string | null>('TOGGLE_LINK_AND_EDIT_COMMAND')
 
@@ -113,8 +114,19 @@ const ToolbarButton = forwardRef(
   ) => {
     const [editor] = useLexicalComposerContext()
 
+    const isMobile = useMediaQuery(MutuallyExclusiveMediaQueryBreakpoints.sm)
+    const parentElement = editor.getRootElement()?.parentElement ?? document.body
+
     return (
-      <StyledTooltip showOnMobile showOnHover label={name} side="top">
+      <StyledTooltip
+        showOnMobile
+        showOnHover
+        label={name}
+        side="top"
+        portal={false}
+        portalElement={isMobile ? parentElement : undefined}
+        documentElement={parentElement}
+      >
         <ToolbarItem
           className={classNames(
             'flex select-none items-center justify-center rounded p-0.5 focus:shadow-none focus:outline-none enabled:hover:bg-default enabled:focus-visible:bg-default disabled:opacity-50 md:border md:border-transparent enabled:hover:md:translucent-ui:border-[--popover-border-color]',
@@ -541,6 +553,8 @@ const ToolbarPlugin = () => {
   useEffect(() => {
     return application.keyboardService.addCommandHandler({
       command: SUPER_TOGGLE_TOOLBAR,
+      category: 'Super notes',
+      description: 'Toggle Super note toolbar',
       onKeyDown(event) {
         if (isMobile) {
           return
@@ -571,6 +585,9 @@ const ToolbarPlugin = () => {
     isToolbarFixedToTop,
     toolbarStore,
   ])
+
+  const popoverDocumentElement =
+    document.getElementById(ElementIds.SuperEditor) ?? editor.getRootElement()?.parentElement ?? document.body
 
   return (
     <>
@@ -637,6 +654,17 @@ const ToolbarPlugin = () => {
               </>
             )}
             <ToolbarButton
+              name="Formatting options"
+              onSelect={() => {
+                setIsTextStyleMenuOpen(!isTextStyleMenuOpen)
+              }}
+              ref={textStyleAnchorRef}
+              className={isTextStyleMenuOpen ? 'md:bg-default' : ''}
+            >
+              <Icon type={blockTypeToIconName[blockType]} size="custom" className="h-4 w-4 md:h-3.5 md:w-3.5" />
+              <Icon type="chevron-down" size="custom" className="ml-2 h-4 w-4 md:h-3.5 md:w-3.5" />
+            </ToolbarButton>
+            <ToolbarButton
               name="Bold"
               iconName="bold"
               active={isBold}
@@ -669,7 +697,7 @@ const ToolbarPlugin = () => {
               onSelect={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code')}
             />
             <ToolbarButton
-              name="Formatting options"
+              name="Text style"
               onSelect={() => {
                 setIsTextFormatMenuOpen(!isTextFormatMenuOpen)
               }}
@@ -678,17 +706,6 @@ const ToolbarPlugin = () => {
             >
               <Icon type="text" size="custom" className="h-4 w-4 md:h-3.5 md:w-3.5" />
               <Icon type="chevron-down" size="custom" className="ml-1 h-4 w-4 md:h-3.5 md:w-3.5" />
-            </ToolbarButton>
-            <ToolbarButton
-              name="Text style"
-              onSelect={() => {
-                setIsTextStyleMenuOpen(!isTextStyleMenuOpen)
-              }}
-              ref={textStyleAnchorRef}
-              className={isTextStyleMenuOpen ? 'md:bg-default' : ''}
-            >
-              <Icon type={blockTypeToIconName[blockType]} size="custom" className="h-4 w-4 md:h-3.5 md:w-3.5" />
-              <Icon type="chevron-down" size="custom" className="ml-2 h-4 w-4 md:h-3.5 md:w-3.5" />
             </ToolbarButton>
             <ToolbarButton
               name="Alignment"
@@ -746,6 +763,8 @@ const ToolbarPlugin = () => {
         className="py-1"
         disableMobileFullscreenTakeover
         disableFlip
+        portal={false}
+        documentElement={popoverDocumentElement}
       >
         <div className="mb-1.5 mt-1 px-3 text-sm font-semibold uppercase text-text">Table of Contents</div>
         <LexicalTableOfContents>
@@ -800,6 +819,8 @@ const ToolbarPlugin = () => {
         disableMobileFullscreenTakeover
         disableFlip
         containerClassName="md:!min-w-60 md:!w-auto"
+        portal={false}
+        documentElement={popoverDocumentElement}
       >
         <Menu a11yLabel="Text formatting options" className="!px-0" onClick={() => setIsTextFormatMenuOpen(false)}>
           <ToolbarMenuItem
@@ -839,6 +860,8 @@ const ToolbarPlugin = () => {
         disableMobileFullscreenTakeover
         disableFlip
         containerClassName="md:!min-w-60 md:!w-auto"
+        portal={false}
+        documentElement={popoverDocumentElement}
       >
         <Menu a11yLabel="Text style" className="!px-0" onClick={() => setIsTextStyleMenuOpen(false)}>
           <ToolbarMenuItem
@@ -910,6 +933,8 @@ const ToolbarPlugin = () => {
         disableMobileFullscreenTakeover
         disableFlip
         containerClassName="md:!min-w-60 md:!w-auto"
+        portal={false}
+        documentElement={popoverDocumentElement}
       >
         <Menu a11yLabel="Alignment" className="!px-0" onClick={() => setIsAlignmentMenuOpen(false)}>
           <ToolbarMenuItem
@@ -949,6 +974,8 @@ const ToolbarPlugin = () => {
         disableMobileFullscreenTakeover
         disableFlip
         containerClassName="md:!min-w-60 md:!w-auto"
+        portal={false}
+        documentElement={popoverDocumentElement}
       >
         <Menu a11yLabel="Insert" className="!px-0" onClick={() => setIsInsertMenuOpen(false)}>
           <ToolbarMenuItem
